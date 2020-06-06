@@ -1,2 +1,2 @@
-# Proyecto_BD_2
-Proyecto 2 Base de Datos II Índice Invertido
+# Proyecto BD 2
+Proyecto 2 Base de Datos II Índice Invertido.
