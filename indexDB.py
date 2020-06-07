@@ -1,8 +1,9 @@
 import json
 import os
+import math
 
-listDocument = os.listdir('data')
-#listDocument = ['tweets_2018-08-07.json', 'tweets_2018-08-08.json', 'tweets_2018-08-09.json']
+#listDocument = os.listdir('data')
+listDocument = ['tweets_2018-08-07.json', 'tweets_2018-08-08.json', 'tweets_2018-08-09.json']
 
 def generateIndex(listTerm):
     indexDb = {}
@@ -32,7 +33,11 @@ def generateIndex(listTerm):
         fjson.close()
     return indexDb
 
-listTerm = ["espina", "corrupto", "fujimorista"]
+listTerm = ["espina", "corrupto", "fujimorista", "moral", "candidato", "miedo"]
 indexDb = generateIndex(listTerm)
 for term in indexDb:
     print(term, "-->", indexDb[term])
+
+
+def genScore():
+    print("test")
