@@ -1,9 +1,22 @@
 import json
 import os
 import math
+import pandas as pd
 
-#listDocument = os.listdir('data')
+# listDocument = os.listdir('data')
 listDocument = ['tweets_2018-08-07.json', 'tweets_2018-08-08.json', 'tweets_2018-08-09.json']
+
+tablaInicial = {'Termino': ['Clima', 'Biblioteca', 'Universidad', 'España', 'Libros'],
+                'Doc1': [1452, 0, 2122, 4123, 0],
+                'Doc2': [0, 2093, 0, 4245, 1234],
+                'Q': [0, 1345, 1453, 0, 2133]
+                }
+
+df = pd.DataFrame(tablaInicial, columns=['Termino', 'Doc1', 'Doc2', 'Q'])
+
+df.to_csv(r'tabla_inicial.csv', index=False, header=True)
+
+print(df)
 
 def generateIndex(listTerm):
     indexDb = {}
@@ -28,16 +41,13 @@ def generateIndex(listTerm):
                     if term in textTweet:
                         tf += 1
             if tf > 0:
-                indexDb[term][0] += 1   # Update Document Frequency
-                indexDb[term].append((document,tf))
+                indexDb[term][0] += 1  # Update Document Frequency
+                indexDb[term].append((document, tf))
         fjson.close()
     return indexDb
+
 
 listTerm = ["espina", "corrupto", "fujimorista", "moral", "candidato", "miedo"]
 indexDb = generateIndex(listTerm)
 for term in indexDb:
     print(term, "-->", indexDb[term])
-
-
-def genScore():
-    
