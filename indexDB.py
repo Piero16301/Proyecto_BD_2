@@ -66,3 +66,10 @@ print("----")
 genScore()
 for term in indexDb:
     print(term, "-->", indexDb[term])
+
+
+def genDataFrame():
+    tablaInicial = {}
+    tablaInicial['Termino'] = []
+    for term in indexDb:
+        tablaInicial['Termino'].append(term)
