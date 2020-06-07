@@ -15,11 +15,10 @@
     </form>
     <br><hr><br>
     <h2>Resultados</h2>
-    {% for file in files %}
-    <h3>Archivo: <a href="/search/{{consulta}}/{{file['name']}}">
-        {{file["name"]}}
-    </a></h3>
-    <p>______________ ______________</p>
+    {% for tweet in result %}
+    <h3>Id: {{tweet["id"]}}</h3>
+    <p><b>Texto:</b> </p>
+    <p>{{tweet["text"]}}</p>
     <br>
     {% endfor %}
     <br><br>

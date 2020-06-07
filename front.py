@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
-from tweets import tweets
+import json
+import os
 
 app = Flask(__name__)
 
@@ -9,14 +10,24 @@ def hello_world():
     return render_template("index.html")
 
 
-@app.route("/search")
-def search():
-    consulta = request.args.get("query").lower()
+@app.route("/search/<string:consulta>/<string:file>")
+def searchTweet(consulta, file):
+    consult_formated = consulta.lower()
+    file_name = os.getcwd() + "/prueba/" + file
+    json_f = open(file_name, "r", encoding="utf-8")
+    tweets = json.load(json_f)
     result = []
-    for re in tweets:
-        if consulta in re['text'].lower():
-            result.append(re)
-    return render_template("resultado.html", consulta=consulta, result=result)
+    for tweet in tweets:
+        if consult_formated in tweet['text'].lower():
+            result.append(tweet)
+    return render_template("tweets.html", consulta=consulta, result=result)
+
+
+@app.route("/search")
+def searchFile():
+    file_name = [{'name': 'tweets_2018-08-07.json'}, {'name': 'tweets_2018-08-08.json'}]
+    consulta = request.args.get("query")
+    return render_template("resultado.html", consulta=consulta, files=file_name)
 
 
 if __name__ == "__main__":
