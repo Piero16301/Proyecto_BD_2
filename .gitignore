@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 *.idea/
+proyecto_DB_2/
 
 # C extensions
 *.so
