@@ -40,4 +40,4 @@ for term in indexDb:
 
 
 def genScore():
-    print("test")
+    
