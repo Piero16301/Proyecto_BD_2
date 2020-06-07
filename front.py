@@ -11,10 +11,10 @@ def hello_world():
 
 @app.route("/search")
 def search():
-    consulta = request.args.get("query")
+    consulta = request.args.get("query").lower()
     result = []
     for re in tweets:
-        if consulta in re['text']:
+        if consulta in re['text'].lower():
             result.append(re)
     return render_template("resultado.html", consulta=consulta, result=result)
 
