@@ -55,7 +55,7 @@ indexDb = generateIndex(listTerm)
 for term in indexDb:
     print(term, "-->", indexDb[term])
 
-def genScore():
+def genIdf_tfIdf():
     for term in indexDb:
         idf = math.log(numTotalDocs/(indexDb[term][0]), 10)
         for doc in range(1,len(indexDb[term])):
@@ -65,13 +65,14 @@ def genScore():
             indexDb[term][doc][1] = tfIdf
 
 print("----")
-genScore()
+genIdf_tfIdf()
 for term in indexDb:
     print(term, "-->", indexDb[term])
 
-query = ["espina", "moral", "espina"]
+query = ["espina"]
 
 def genQuery(query):
+    print(" -- Generate TF_IDF from Query --")
     queryDic = {}
     for term in indexDb:
         tf = 0
@@ -81,7 +82,7 @@ def genQuery(query):
             if term == word:
                 tf += 1
         print("tf_query: ", tf)
-        tfIdf = math.log(1+tf,10) + math.log(numTotalDocs/df, 10)
+        tfIdf = math.log(1+tf,10) * indexDb[term][0]
         queryDic[term] = tfIdf
     print(queryDic)
     return queryDic
@@ -102,10 +103,32 @@ def genSquareByDoc():
                     squaretfIdfDoc += tfIdfDoc**2
         squaretfIdfDoc = math.sqrt(squaretfIdfDoc)
         squareByDoc[doc] = squaretfIdfDoc
+    # Square Query
+    print("-- Square Query --")
+    querySquare = 0
+    for term in queryItdf:
+        querySquare += queryItdf[term]**2
+    squareByDoc['query'] = math.sqrt(querySquare)
     print(squareByDoc)
+    return squareByDoc
 
 
-genSquareByDoc()
+squareByDoc = genSquareByDoc()
+
+
+def genNormalizacion():
+    print("-- Gen Normlization --")
+    dicCoseno = {}
+    for document in listDocument:
+        for term in indexDb:
+            normalizadoTerm = 0
+            for docNum in range(1,len(indexDb[term])):
+                if document == indexDb[term][docNum][0]:
+                    print("term: ", term,  "document:", indexDb[term][docNum], " tfIdf: ", indexDb[term][docNum][1])
+                    tfIdf = indexDb[term][docNum][1]
+                    normalizadoTerm = tfIdf/squareByDoc[document]
+
+#genNormalizacion()
 
 '''
 def genDataFrame():
@@ -114,3 +137,7 @@ def genDataFrame():
     for term in indexDb:
         tablaInicial['Termino'].append(term)
 '''
+
+print("test")
+qItdf = queryItdf['espina']
+print(qItdf)
