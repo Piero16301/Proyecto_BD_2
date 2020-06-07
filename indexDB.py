@@ -18,6 +18,9 @@ df.to_csv(r'tabla_inicial.csv', index=False, header=True)
 
 print(df)
 
+data = pd.read_csv('tabla_inicial.csv')
+print(data)
+
 def generateIndex(listTerm):
     indexDb = {}
     for term in listTerm:
