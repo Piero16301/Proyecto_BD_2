@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+    <link rel="shortcut icon" href=" {{ url_for('static', filename='img/tweet.ico') }} ">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/resultado.css') }}">
+</head>
+<body>
+    <h1>Busqueda</h1>
+    <form action="{{ url_for('search') }}">
+        <input type="text" name="query" placeholder="{{consulta}}">
+        <input type="submit" value="Buscar">
+    </form>
+    <br><hr><br>
+    <h2>Resultados</h2>
+    {% for tweet in result %}
+    <h3>Id: {{tweet["id"]}}</h3>
+    <p><b>Texto:</b> </p>
+    <p>{{tweet["text"]}}</p>
+    <br>
+    {% endfor %}
+    <br><br>
+</body>
+</html>
