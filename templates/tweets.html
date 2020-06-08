@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Test</title>
     <link rel="shortcut icon" href=" {{ url_for('static', filename='img/tweet.ico') }} ">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/resultado.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tweets.css') }}">
 </head>
 <body>
 
@@ -26,8 +26,8 @@
         <section class="tweets">
 
             <div class="resultado">
-                <h2>nombre_archivo.json</h2>
-                <p>Tweets relacionados a la consulta <b>conusltado</b></p>
+                <h2>{{file}}</h2>
+                <p>Tweets relacionados a la consulta <b>{{consulta}}</b></p>
             </div>
 
             <div class="line"></div>

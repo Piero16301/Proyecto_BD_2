@@ -20,7 +20,7 @@ def searchTweet(consulta, file):
     for tweet in tweets:
         if consult_formated in tweet['text'].lower():
             result.append(tweet)
-    return render_template("tweets.html", consulta=consulta, result=result)
+    return render_template("tweets.html", consulta=consulta, result=result, file=file)
 
 
 @app.route("/search")

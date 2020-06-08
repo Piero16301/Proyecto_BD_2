@@ -1,0 +1,234 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&display=swap&family=Expletus+Sans');
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+header, footer {
+    width: 100%;
+    display: flex;
+    padding: 0px 65px 0px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header {
+    height: 9vh;
+    box-shadow: 0 1px 3px #e6e6e6;
+}
+
+.logo, .logo:active, .logo:visited{
+    font-family: 'Expletus Sans', cursive;
+    text-decoration: none;
+    font-weight: bolder;
+    font-size: x-large;
+    color: #2b2b2b;
+}
+
+.description {
+    font-size: 19px;
+}
+
+form {
+    position: relative;
+    transform: translateX(10px);
+    max-width: 90vw;
+    width: 400px;
+}
+
+form img {
+    position: absolute;
+    width: 16px;
+    top: 10px;
+    left: 10px;
+}
+
+form #buscador {
+    width: 100%;
+    height: 37px;
+    font-size: 15px;
+    padding-left: 35px;
+    border-radius: 10px;
+    color: #2b2b2b;
+    border: 1px solid #e2e2e2;
+    outline: none;
+    transition: box-shadow ease .2s;
+}
+
+form #buscador:focus, form #buscador:hover {
+    box-shadow: 0 1px 3px #efefef;
+}
+
+form #btn {
+    display: none;
+}
+
+
+main {
+    width: 100%;
+    min-height: 79vh;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    
+}
+
+.tweets {
+    margin-top: 40px;
+    width: 570px;
+    max-width: 95vw;
+    padding: 10px;
+    margin-bottom: 30px;
+}
+
+h2 {
+    color: #a0a0a0;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.resultado p {
+    color: #bebebe;
+    font-size: 17px;
+    margin: 10px 0 20px;
+    text-align: center;
+}
+
+.resultado p b {
+    border-bottom: 1px dashed;
+}
+
+.line {
+    border-top: 1px solid #E6ECF0;
+    margin-bottom: 30px;
+}
+
+.tweet {
+    width: 100%;
+    padding: 15px 10px 5px;
+    border: 1px solid #d9dfe3;
+    margin: 10px 0;
+    cursor: default;
+    border-radius: 8px;
+    transition: background,box-shadow ease .2s;
+    transition: box-shadow ease .1s;
+}
+
+.tweet:hover {
+    background-color: #F5F8FA;
+    box-shadow: 0 1px 3px #ccc;
+}
+
+.retweet, .inside {
+    width: 100%;
+    display: flex;
+}
+
+.retweet {
+    color: #927798;
+}
+
+.left {
+    width: 60px;
+    display: flex;
+    justify-content: right;
+    padding: 0 10px;
+}
+
+.left svg {
+    fill: #657786;
+    width: 13px;
+}
+
+.right {
+    text-decoration: none;
+    color: #927798;
+    font-size: 13px;
+    margin-bottom: 2px;
+    font-weight: 400;
+}
+.right:visited, .right:active {
+    color: #927798;
+}
+
+img {
+    width: 49px;
+    border-radius: 50%;
+}
+
+.content {
+    padding: 0 10px;
+    font-weight: 300;
+}
+
+.top {
+    position: relative;
+    font-size: 15px;
+    display: flex;
+    color: rgb(101, 119, 134);
+    margin-bottom: 2px;
+}
+
+.top svg {
+    position: absolute;
+}
+
+.nombre {
+    font-size: 15.4px;
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+}
+
+.nombre:hover {
+    text-decoration: underline;
+}
+
+.texto {
+    font-size: 15px;
+    line-height: 1.3125;
+    overflow-wrap: break-word;
+}
+
+.texto a {
+    color: rgb(27, 149, 224);
+    text-decoration: none;
+}
+.texto a:active, .texto a:visited {
+    color: rgb(27, 149, 224);
+}
+
+.reaciones {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3px;
+}
+
+.reaciones svg {
+    padding: 8px;
+    cursor: pointer;
+    fill: rgb(159, 182, 202);
+    border-radius: 50%;
+    transition: background-color ease-out 0.2s;
+}
+
+.reaciones svg:hover {
+    background-color: #DEF3EB;
+}
+
+
+footer {
+    height: 12vh;
+    border-top: 1px solid #e6e6e6;
+    color: #7e7e7e;
+}
+
+.names {
+    display: flex;
+}
+
+.names > p {
+    margin-left: 10px;
+}
