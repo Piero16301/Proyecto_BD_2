@@ -26,9 +26,9 @@ def generateIndex(listTerm):
     for term in listTerm:
         indexDb[term] = [0]
     for document in listDocument:
-        print("--------------------------")
-        print("Analysing document: ", document)
-        print("--------------------------")
+        #print("--------------------------")
+        #print("Analysing document: ", document)
+        #print("--------------------------")
         fjson = open('data/' + document, )
         listTweetsDoc = json.load(fjson)
         for term in listTerm:
@@ -72,7 +72,7 @@ for term in indexDb:
     print(term, "-->", indexDb[term])
 
 
-query = ["espina"]
+query = ["candidato"]
 
 def genQuery(query):
     print(" -- Generate TF_IDF from Query --")
@@ -97,9 +97,9 @@ def genSquareByDoc():
     squareByDoc = {}
     for doc in listDocument:
         squaretfIdfDoc = 0
-        print("check doc: ", doc)
+        #print("check doc: ", doc)
         for term in indexDb:
-            print("check term: ", term)
+            #print("check term: ", term)
             for docNum in range(1,len(indexDb[term])):
                 if indexDb[term][docNum][0] == doc:
                     tfIdfDoc = indexDb[term][docNum][1]
@@ -118,22 +118,33 @@ def genSquareByDoc():
 
 squareByDoc = genSquareByDoc()
 
-'''
-def genNormalizacion():
-    print("-- Gen Normlization --")
-    dicCoseno = {}
+
+def genScoreCoseno():
+    print("-- Gen Score Coseno --")
+    listCoseno = []
     for document in listDocument:
+        cosenoDoc = 0
         for term in indexDb:
             normalizadoTerm = 0
             for docNum in range(1,len(indexDb[term])):
                 if document == indexDb[term][docNum][0]:
-                    print("term: ", term,  "document:", indexDb[term][docNum], " tfIdf: ", indexDb[term][docNum][1])
+                    #print("term: ", term,  "document:", indexDb[term][docNum], " tfIdf: ", indexDb[term][docNum][1])
                     tfIdf = indexDb[term][docNum][1]
                     normalizadoTerm = tfIdf/squareByDoc[document]
+                    if term in queryItdf:
+                        normalizadoQuery = queryItdf[term]/squareByDoc['query']
+                    else:
+                        normalizadoQuery = 0
+                    cosenoDoc += (normalizadoTerm * normalizadoQuery)
+        listCoseno.append((document, cosenoDoc))
+    #print(listCoseno)
+    listCoseno = sorted(listCoseno, key=lambda x: -x[1])
+    print(listCoseno)
 
-#genNormalizacion()
 
-'''
+genScoreCoseno()
+
+
 
 '''
 def genDataFrame():
@@ -143,8 +154,9 @@ def genDataFrame():
         tablaInicial['Termino'].append(term)
 
 
-print("test")
-qItdf = queryItdf['espina']
-print(qItdf)
-
 '''
+
+print("test")
+word = 'nombr'
+print(word in 'nombramiento')
+
