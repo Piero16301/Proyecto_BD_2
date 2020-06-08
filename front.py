@@ -25,7 +25,8 @@ def searchTweet(consulta, file):
 
 @app.route("/search")
 def searchFile():
-    file_name = [{'name': 'tweets_2018-08-07.json'}, {'name': 'tweets_2018-08-08.json'}]
+    file_name = [{'name': 'tweets_2018-08-07.json'}, {'name': 'tweets_2018-08-08.json'},
+                 {'name': 'tweets_2018-08-08.json'}]
     consulta = request.args.get("query")
     return render_template("resultado.html", consulta=consulta, files=file_name)
 
