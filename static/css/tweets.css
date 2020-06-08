@@ -109,11 +109,11 @@ h2 {
     width: 100%;
     padding: 15px 10px 5px;
     border: 1px solid #d9dfe3;
-    margin: 10px 0;
+    margin: 13px 0;
     cursor: default;
     border-radius: 8px;
-    transition: background,box-shadow ease .2s;
-    transition: box-shadow ease .1s;
+    transition: background ease .2s;
+    transition: box-shadow ease-in .1s;
 }
 
 .tweet:hover {
@@ -145,8 +145,8 @@ h2 {
 .right {
     text-decoration: none;
     color: #927798;
-    font-size: 13px;
-    margin-bottom: 2px;
+    font-size: 14px;
+    margin-bottom: 3px;
     font-weight: 400;
 }
 .right:visited, .right:active {
