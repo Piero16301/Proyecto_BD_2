@@ -7,21 +7,60 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/resultado.css') }}">
 </head>
 <body>
-    <h1>Busqueda</h1>
-    <form action="{{ url_for('searchFile') }}">
-        <input type="text" name="query" placeholder="{{consulta}}">
-        <input type="submit" value="Buscar">
-        <a href="/"> <| </a>
-    </form>
-    <br><hr><br>
-    <h2>Resultados</h2>
-    {% for file in files %}
-    <h3>Archivo: <a href="/search/{{consulta}}/{{file['name']}}">
-        {{file["name"]}}
-    </a></h3>
-    <p>______________ ______________</p>
-    <br>
-    {% endfor %}
-    <br><br>
+
+    <header>
+        <a href="/" class="logo">
+            ⏲Proyecto2.
+        </a>
+        <form action="{{ url_for('searchFile') }}">
+            <img src="{{ url_for('static', filename='img/search.png') }}" alt="_buscar">
+            <input type="text" name="query" placeholder="{{consulta}}" id="buscador">
+            <input type="submit" value="Buscar" id="btn">
+        </form>
+        <p class="description">
+            Base de Datos II
+        </p>
+    </header>
+
+    <main>
+        <section class="resultados">
+
+            <div class="titulos">
+                <p class="nombre">ARCHIVO</p>
+                <p class="number">NUMERO</p>
+                <p class="puntaje">SCORE</p>
+            </div>
+
+            {% for file in files %}
+            <div class="resultado">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='img/tweet.png') }}" alt="_Result">
+                </div>
+                <p class="file_name">
+                    {{file["name"]}}
+                </p>
+                <p class="numero">24</p>
+                <p class="score">0.5</p>
+                <a class="go" href="/search/{{consulta}}/{{file['name']}}">
+                    Ver tweets +
+                </a>
+            </div>
+            {% endfor %}
+
+        </section>
+    </main>
+
+    <footer>
+        <div class="year">
+            <p>© <script>document.write(new Date().getFullYear())</script>
+                Proyecto. Todos los derechos reservados</p>
+        </div>
+        <div class="names">
+            <p>Angel</p>
+            <p>Piero</p>
+            <p>Jeanlee</p>
+        </div>
+    </footer>
+
 </body>
 </html>
