@@ -3,8 +3,8 @@ import os
 import math
 import pandas as pd
 
-# listDocument = os.listdir('data')
-listDocument = ['tweets_2018-08-07.json', 'tweets_2018-08-08.json', 'tweets_2018-08-09.json']
+listDocument = os.listdir('data')
+#listDocument = ['tweets_2018-08-07.json', 'tweets_2018-08-08.json', 'tweets_2018-08-09.json']
 numTotalDocs = len(listDocument)
 
 tablaInicial = {'Termino': ['Clima', 'Biblioteca', 'Universidad', 'España', 'Libros'],
@@ -56,18 +56,21 @@ for term in indexDb:
     print(term, "-->", indexDb[term])
 
 def genIdf_tfIdf():
+    print("genIDF_TFIDF")
     for term in indexDb:
         idf = math.log(numTotalDocs/(indexDb[term][0]), 10)
+        indexDb[term][0] = idf
         for doc in range(1,len(indexDb[term])):
+            #print(indexDb[term][doc][1])
             tf = indexDb[term][doc][1]
             tfIdf = math.log(1+tf, 10) * idf
-            indexDb[term][0] = idf
             indexDb[term][doc][1] = tfIdf
 
 print("----")
 genIdf_tfIdf()
 for term in indexDb:
     print(term, "-->", indexDb[term])
+
 
 query = ["espina"]
 
@@ -115,7 +118,7 @@ def genSquareByDoc():
 
 squareByDoc = genSquareByDoc()
 
-
+'''
 def genNormalizacion():
     print("-- Gen Normlization --")
     dicCoseno = {}
@@ -131,13 +134,17 @@ def genNormalizacion():
 #genNormalizacion()
 
 '''
+
+'''
 def genDataFrame():
     tablaInicial = {}
     tablaInicial['Termino'] = []
     for term in indexDb:
         tablaInicial['Termino'].append(term)
-'''
+
 
 print("test")
 qItdf = queryItdf['espina']
 print(qItdf)
+
+'''
