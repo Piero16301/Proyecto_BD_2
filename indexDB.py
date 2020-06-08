@@ -2,6 +2,7 @@ import json
 import os
 import math
 import pandas as pd
+from Preprocesamiento import generateTokens
 
 listDocument = os.listdir('data')
 #listDocument = ['tweets_2018-08-07.json', 'tweets_2018-08-08.json', 'tweets_2018-08-09.json']
@@ -22,6 +23,7 @@ data = pd.read_csv('tabla_inicial.csv')
 print(data)
 
 def generateIndex(listTerm):
+    print("-- Generate Index --")
     indexDb = {}
     for term in listTerm:
         indexDb[term] = [0]
@@ -50,7 +52,9 @@ def generateIndex(listTerm):
     return indexDb
 
 
-listTerm = ["espina", "corrupto", "fujimorista", "moral", "candidato", "miedo"]
+#listTerm = ["espina", "corrupto", "fujimorista", "moral", "candidato", "miedo"]
+listTerm = generateTokens()
+print(len(listTerm))
 indexDb = generateIndex(listTerm)
 for term in indexDb:
     print(term, "-->", indexDb[term])
@@ -67,9 +71,10 @@ def genIdf_tfIdf():
             indexDb[term][doc][1] = tfIdf
 
 print("----")
-genIdf_tfIdf()
-for term in indexDb:
-    print(term, "-->", indexDb[term])
+#genIdf_tfIdf()
+
+#for term in indexDb:
+#    print(term, "-->", indexDb[term])
 
 
 query = ["candidato"]
@@ -80,17 +85,19 @@ def genQuery(query):
     for term in indexDb:
         tf = 0
         if term not in query: continue
+        print("Found:", term)
         df = 1
         for word in query:
-            if term == word:
+            if term in word:
                 tf += 1
-        print("tf_query: ", tf)
+        print("Gen Query tf_query: ", tf)
         tfIdf = math.log(1+tf,10) * indexDb[term][0]
         queryDic[term] = tfIdf
     print(queryDic)
     return queryDic
 
 queryItdf = genQuery(query)
+
 
 def genSquareByDoc():
     print("-- Gen SquareByDoc --")
@@ -116,8 +123,8 @@ def genSquareByDoc():
     return squareByDoc
 
 
-squareByDoc = genSquareByDoc()
-
+#squareByDoc = genSquareByDoc()
+squareByDoc = {}
 
 def genScoreCoseno():
     print("-- Gen Score Coseno --")
@@ -142,7 +149,7 @@ def genScoreCoseno():
     print(listCoseno)
 
 
-genScoreCoseno()
+#genScoreCoseno()
 
 
 
@@ -155,8 +162,4 @@ def genDataFrame():
 
 
 '''
-
-print("test")
-word = 'nombr'
-print(word in 'nombramiento')
 
