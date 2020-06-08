@@ -1,6 +1,7 @@
 import json
 import os
 from nltk.corpus import stopwords
+from nltk.stem import SnowballStemmer
 import re
 
 listaArchivos = os.listdir('prueba')
@@ -25,9 +26,9 @@ for archivo in listaArchivos:
                     tokens.remove(token)
                 if token.find("http") == 0:
                     tokens.remove(token)
-
+            spanish_stemmer = SnowballStemmer('spanish')
             for token in tokens:
-                tokensTotales.append(token)
+                tokensTotales.append(spanish_stemmer.stem(token))
 
             tokensTotales = list(dict.fromkeys(tokensTotales))
 
