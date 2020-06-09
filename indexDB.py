@@ -1,6 +1,7 @@
 import json
 import os
 import math
+import re
 import pandas as pd
 from Preprocesamiento import generateTokens
 
@@ -19,7 +20,7 @@ data = pd.read_csv('tabla_inicial.csv')
 #print(data)
 '''
 
-def generateIndex(listTerm, listDocument):
+def generateIndex(listTerm, listDocument, numTotalTweets):
     print("-- Generate Index --")
     indexDb = {}
     for term in listTerm:
@@ -28,25 +29,29 @@ def generateIndex(listTerm, listDocument):
         #print("--------------------------")
         #print("Analysing document: ", document)
         #print("--------------------------")
-        fjson = open('data/' + document, encoding="utf-8")
+        fjson = open('prueba/' + document, encoding="utf-8")
         listTweetsDoc = json.load(fjson)
         for term in listTerm:
             tf = 0
             df = 0
             for tweet in listTweetsDoc:
+                numTotalTweets += 1
                 if tweet['retweeted'] is True:
-                    rtText = tweet['RT_text']
-                    if term in rtText:
-                        tf += 1
+                    text = tweet['RT_text']
                 else:
-                    textTweet = tweet['text']
-                    if term in textTweet:
+                    text = tweet['text']
+                text = text.strip()
+                text = text.lower()
+                text = re.sub('[¿|?|$|.|,|:|;|!|º|«|»|(|)|@|¡|"|😆|/|#]', '', text)
+                text = text.split()
+                for word in text:
+                    if term in word:
                         tf += 1
-            if tf > 0:
-                indexDb[term][0] += 1  # Update Document Frequency
-                indexDb[term].append([document, tf])
+                if tf > 0:
+                    indexDb[term][0] += 1  # Update Document Frequency
+                    indexDb[term].append([tweet['id'], tf])
         fjson.close()
-    return indexDb
+    return [indexDb, numTotalTweets]
 
 
 def genIdf_tfIdf(indexDb, numTotalDocs):
@@ -62,46 +67,54 @@ def genIdf_tfIdf(indexDb, numTotalDocs):
     return indexDb
 
 
-def genQuery(query, indexDb):
+def genQuerytfIdf(query, indexDb, numTotalTweets):
     print(" -- Generate TF_IDF from Query --")
-    queryDic = {}
-    for term in indexDb:
-        tf = 0
-        if term not in query: continue
-        print("Found:", term)
-        df = 1
-        for word in query:
-            if term in word:
-                tf += 1
-        print("Gen Query tf_query: ", tf)
-        tfIdf = math.log(1+tf,10) * indexDb[term][0]
-        queryDic[term] = tfIdf
-    print(queryDic)
-    return queryDic
+    print(numTotalTweets)
+    squareQuery = 0
+    queryDictfIdf = {}
+    for term in query:
+        if term in indexDb:
+            df = indexDb[term][0]
+            tf = 1
+            tfidf = math.log(1 + tf, 10) * math.log(numTotalTweets/df, 10)
+            queryDictfIdf[term] = tfidf
+            squareQuery += tfidf**2
+    squareQuery = math.sqrt(squareQuery)
+    print("queryDictfIdf -> ", queryDictfIdf)
+    print("squareQuery ->", squareQuery)
+    return [queryDictfIdf, squareQuery]
 
 
-def genSquareByDoc(indexDb, listDocument, queryItdf):
-    print("-- Gen SquareByDoc --")
-    squareByDoc = {}
-    for doc in listDocument:
-        squaretfIdfDoc = 0
-        #print("check doc: ", doc)
-        for term in indexDb:
-            #print("check term: ", term)
-            for docNum in range(1,len(indexDb[term])):
-                if indexDb[term][docNum][0] == doc:
-                    tfIdfDoc = indexDb[term][docNum][1]
-                    squaretfIdfDoc += tfIdfDoc**2
-        squaretfIdfDoc = math.sqrt(squaretfIdfDoc)
-        squareByDoc[doc] = squaretfIdfDoc
-    # Square Query
-    print("-- Square Query --")
-    querySquare = 0
-    for term in queryItdf:
-        querySquare += queryItdf[term]**2
-    squareByDoc['query'] = math.sqrt(querySquare)
-    print(squareByDoc)
-    return squareByDoc
+def genDocsTfIdf(query, indexDb, numTotalTweets):
+    print(" -- Generate DOCS_TF_IDF --")
+    # Generate List Docs
+    dicTweetsId_tf_idf = {}
+    for term in query:
+        for tweetNum in range(1,len(indexDb[term])):
+            tweetId = indexDb[term][tweetNum][0]
+            tf_term = indexDb[term][tweetNum][1]
+            tf_Norm = math.log(1 + tf_term)
+            df_term = indexDb[term][0]
+            idf = math.log(numTotalTweets/df_term)
+            tf_idf = tf_Norm * idf
+            if tweetId not in dicTweetsId_tf_idf:
+                dicTweetsId_tf_idf[tweetId] = []
+            dicTweetsId_tf_idf[tweetId].append((term, tf_idf))
+    print(dicTweetsId_tf_idf)
+    return dicTweetsId_tf_idf
+
+def genSquareByDoc(dicTweetsId_tf_idf):
+    print(" -- Generate Square Docs --")
+    dicTweetIdSquares = {}
+    for tweetId in dicTweetsId_tf_idf:
+        squareTweetId = 0
+        for termNum in range(len(dicTweetsId_tf_idf[tweetId])):
+            tf_idf = dicTweetsId_tf_idf[tweetId][termNum][1]
+            squareTweetId += tf_idf**2
+        squareTweetId = math.sqrt(squareTweetId)
+        dicTweetIdSquares[tweetId] = squareTweetId
+    print(dicTweetIdSquares)
+    return dicTweetIdSquares
 
 
 def genScoreCoseno(indexDb, listDocument, queryItdf, squareByDoc):
@@ -128,24 +141,28 @@ def genScoreCoseno(indexDb, listDocument, queryItdf, squareByDoc):
     return listCoseno
 
 
-def inicial():
+def inicial(numTotalTweets):
     #listDocument = os.listdir('data')
-    listDocument = ['tweets_2018-08-07.json', 'tweets_2018-08-08.json', 'tweets_2018-08-09.json']
+    listDocument = os.listdir('prueba')
     numTotalDocs = len(listDocument)
     # listTerm = ["espina", "corrupto", "fujimorista", "moral", "candidato", "miedo"]
     listTerm = generateTokens()
     print(len(listTerm))
-    indexDb = generateIndex(listTerm, listDocument)
+    listResult = generateIndex(listTerm, listDocument, numTotalTweets)
+    indexDb = listResult[0]
+    numTotalTweets = listResult[1]
     for term in indexDb:
         print(term, "-->", indexDb[term])
-    return genIdf_tfIdf(indexDb, numTotalDocs)
+    return listResult
 
 
-def queryIndex(indexDb, query):
-    listDocument = ['tweets_2018-08-07.json', 'tweets_2018-08-08.json', 'tweets_2018-08-09.json']
-    queryItdf = genQuery(query, indexDb)
-    squareByDoc = genSquareByDoc(indexDb, listDocument, queryItdf)
-    listCoseno = genScoreCoseno(indexDb, listDocument, queryItdf, squareByDoc)
-    print(listCoseno)
+def queryIndex(indexDb, query, numTotalTweets):
+    print("-- Searching Query in IndexDb --")
+    listDocument = os.listdir('prueba')
+    QuerytfIdf_square_par = genQuerytfIdf(query, indexDb, numTotalTweets)
+    dicTweetsId_tf_idf = genDocsTfIdf(query, indexDb, numTotalTweets)
+    dicTweetIdSquares = genSquareByDoc(dicTweetsId_tf_idf)
+    #listCoseno = genScoreCoseno(indexDb, listDocument, queryItdf, squareByDoc)
+    #print(listCoseno)
     #return listCoseno
 

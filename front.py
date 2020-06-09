@@ -5,7 +5,11 @@ from indexDB import inicial, queryIndex
 
 app = Flask(__name__)
 
-indice = inicial()
+numTotalTweets = 0
+listResult = inicial(numTotalTweets)
+indice = listResult[0]
+numTotalTweets = listResult[1]
+print("Front: ", numTotalTweets)
 
 @app.route('/')
 def hello_world():
@@ -18,7 +22,7 @@ def searchFile():
                  {'name': 'tweets_2018-08-08.json'}]
     consulta = request.args.get("query")
     query = consulta.split(" ")
-    queryIndex(indice,query)
+    queryIndex(indice,query, numTotalTweets)
     return render_template("resultado.html", consulta=consulta, files=file_name)
 
 
@@ -36,4 +40,4 @@ def searchTweet(consulta, file):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
