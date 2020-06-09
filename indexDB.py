@@ -117,7 +117,26 @@ def genSquareByDoc(dicTweetsId_tf_idf):
     return dicTweetIdSquares
 
 
-def genScoreCoseno(indexDb, listDocument, queryItdf, squareByDoc):
+def genScoreCoseno(dicTweetsId_tf_idf, dicTweetIdSquares, querytfIdf_square_par):
+    print(" -- genScoreCoseno -- ")
+    query_tf_idf = querytfIdf_square_par[0]
+    Square_query = querytfIdf_square_par[1]
+    dicCosenos = {}
+    for tweetId in dicTweetsId_tf_idf:
+        cosenoTweetId = 0
+        for numTerm in range(len(dicTweetsId_tf_idf[tweetId])):
+            tf_idf = dicTweetsId_tf_idf[tweetId][numTerm][1]
+            squareTweetId = dicTweetIdSquares[tweetId]
+            tf_idf_norm = tf_idf/squareTweetId
+            term_tweet = dicTweetsId_tf_idf[tweetId][numTerm][0]
+            tf_idf_Q = query_tf_idf[term_tweet]
+            tf_idf_Q_norm = tf_idf_Q / Square_query
+            cosenoTweetId += (tf_idf_norm * tf_idf_Q_norm)
+        dicCosenos[tweetId] = cosenoTweetId
+    print(dicCosenos)
+
+
+def genScoreCosenoOld(indexDb, listDocument, queryItdf, squareByDoc):
     print("-- Gen Score Coseno --")
     listCoseno = []
     for document in listDocument:
@@ -159,9 +178,10 @@ def inicial(numTotalTweets):
 def queryIndex(indexDb, query, numTotalTweets):
     print("-- Searching Query in IndexDb --")
     listDocument = os.listdir('prueba')
-    QuerytfIdf_square_par = genQuerytfIdf(query, indexDb, numTotalTweets)
+    querytfIdf_square_par = genQuerytfIdf(query, indexDb, numTotalTweets)
     dicTweetsId_tf_idf = genDocsTfIdf(query, indexDb, numTotalTweets)
     dicTweetIdSquares = genSquareByDoc(dicTweetsId_tf_idf)
+    genScoreCoseno(dicTweetsId_tf_idf, dicTweetIdSquares, querytfIdf_square_par)
     #listCoseno = genScoreCoseno(indexDb, listDocument, queryItdf, squareByDoc)
     #print(listCoseno)
     #return listCoseno
