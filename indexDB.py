@@ -4,10 +4,7 @@ import math
 import pandas as pd
 from Preprocesamiento import generateTokens
 
-listDocument = os.listdir('data')
-#listDocument = ['tweets_2018-08-07.json', 'tweets_2018-08-08.json', 'tweets_2018-08-09.json']
-numTotalDocs = len(listDocument)
-
+'''
 tablaInicial = {'Termino': ['Clima', 'Biblioteca', 'Universidad', 'España', 'Libros'],
                 'Doc1': [1452, 0, 2122, 4123, 0],
                 'Doc2': [0, 2093, 0, 4245, 1234],
@@ -17,12 +14,12 @@ tablaInicial = {'Termino': ['Clima', 'Biblioteca', 'Universidad', 'España', 'Li
 df = pd.DataFrame(tablaInicial, columns=['Termino', 'Doc1', 'Doc2', 'Q'], index=['Clima', 'Biblioteca', 'Universidad', 'España', 'Libros'])
 
 df.to_csv(r'tabla_inicial.csv', index=False, header=True)
-
-
 data = pd.read_csv('tabla_inicial.csv')
-print(data)
 
-def generateIndex(listTerm):
+#print(data)
+'''
+
+def generateIndex(listTerm, listDocument):
     print("-- Generate Index --")
     indexDb = {}
     for term in listTerm:
@@ -31,7 +28,7 @@ def generateIndex(listTerm):
         #print("--------------------------")
         #print("Analysing document: ", document)
         #print("--------------------------")
-        fjson = open('data/' + document, )
+        fjson = open('data/' + document, encoding="utf-8")
         listTweetsDoc = json.load(fjson)
         for term in listTerm:
             tf = 0
@@ -52,14 +49,7 @@ def generateIndex(listTerm):
     return indexDb
 
 
-#listTerm = ["espina", "corrupto", "fujimorista", "moral", "candidato", "miedo"]
-listTerm = generateTokens()
-print(len(listTerm))
-indexDb = generateIndex(listTerm)
-for term in indexDb:
-    print(term, "-->", indexDb[term])
-
-def genIdf_tfIdf():
+def genIdf_tfIdf(indexDb, numTotalDocs):
     print("genIDF_TFIDF")
     for term in indexDb:
         idf = math.log(numTotalDocs/(indexDb[term][0]), 10)
@@ -69,17 +59,10 @@ def genIdf_tfIdf():
             tf = indexDb[term][doc][1]
             tfIdf = math.log(1+tf, 10) * idf
             indexDb[term][doc][1] = tfIdf
-
-print("----")
-#genIdf_tfIdf()
-
-#for term in indexDb:
-#    print(term, "-->", indexDb[term])
+    return indexDb
 
 
-query = ["candidato"]
-
-def genQuery(query):
+def genQuery(query, indexDb):
     print(" -- Generate TF_IDF from Query --")
     queryDic = {}
     for term in indexDb:
@@ -96,10 +79,8 @@ def genQuery(query):
     print(queryDic)
     return queryDic
 
-queryItdf = genQuery(query)
 
-
-def genSquareByDoc():
+def genSquareByDoc(indexDb, listDocument, queryItdf):
     print("-- Gen SquareByDoc --")
     squareByDoc = {}
     for doc in listDocument:
@@ -123,10 +104,7 @@ def genSquareByDoc():
     return squareByDoc
 
 
-#squareByDoc = genSquareByDoc()
-squareByDoc = {}
-
-def genScoreCoseno():
+def genScoreCoseno(indexDb, listDocument, queryItdf, squareByDoc):
     print("-- Gen Score Coseno --")
     listCoseno = []
     for document in listDocument:
@@ -147,19 +125,27 @@ def genScoreCoseno():
     #print(listCoseno)
     listCoseno = sorted(listCoseno, key=lambda x: -x[1])
     print(listCoseno)
+    return listCoseno
 
 
-#genScoreCoseno()
-
-
-
-'''
-def genDataFrame():
-    tablaInicial = {}
-    tablaInicial['Termino'] = []
+def inicial():
+    #listDocument = os.listdir('data')
+    listDocument = ['tweets_2018-08-07.json', 'tweets_2018-08-08.json', 'tweets_2018-08-09.json']
+    numTotalDocs = len(listDocument)
+    # listTerm = ["espina", "corrupto", "fujimorista", "moral", "candidato", "miedo"]
+    listTerm = generateTokens()
+    print(len(listTerm))
+    indexDb = generateIndex(listTerm, listDocument)
     for term in indexDb:
-        tablaInicial['Termino'].append(term)
+        print(term, "-->", indexDb[term])
+    return genIdf_tfIdf(indexDb, numTotalDocs)
 
 
-'''
+def queryIndex(indexDb, query):
+    listDocument = ['tweets_2018-08-07.json', 'tweets_2018-08-08.json', 'tweets_2018-08-09.json']
+    queryItdf = genQuery(query, indexDb)
+    squareByDoc = genSquareByDoc(indexDb, listDocument, queryItdf)
+    listCoseno = genScoreCoseno(indexDb, listDocument, queryItdf, squareByDoc)
+    print(listCoseno)
+    #return listCoseno
 

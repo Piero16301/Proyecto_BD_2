@@ -7,11 +7,11 @@ import re
 
 def generateTokens():
     print("-- Generate Tokens --")
-    dirName = 'data'
+    dirName = 'prueba'
     listaArchivos = os.listdir(dirName)
     tokensTotales = list()
     for archivo in listaArchivos:
-        with open(dirName + '/' + archivo) as json_file:
+        with open(dirName + '/' + archivo, encoding="utf-8") as json_file:
             print("Check json File: ", json_file)
             tweets = json.load(json_file)
             for tweet in tweets:
