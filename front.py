@@ -20,10 +20,9 @@ def hello_world():
 def searchFile():
     file_name = [{'name': 'tweets_2018-08-07.json'}, {'name': 'tweets_2018-08-08.json'},
                  {'name': 'tweets_2018-08-08.json'}]
-    consulta = request.args.get("query")
-    query = consulta.split(" ")
-    queryIndex(indice,query, numTotalTweets)
-    return render_template("resultado.html", consulta=consulta, files=file_name)
+    query = request.args.get("query")
+    queryIndex(indice, query, numTotalTweets)
+    return render_template("resultado.html", consulta=query, files=file_name)
 
 
 @app.route("/search/<string:consulta>/<string:file>")

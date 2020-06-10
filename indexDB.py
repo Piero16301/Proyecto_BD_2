@@ -4,6 +4,7 @@ import math
 import re
 import pandas as pd
 from Preprocesamiento import generateTokens
+from nltk.stem import SnowballStemmer
 
 '''
 tablaInicial = {'Termino': ['Clima', 'Biblioteca', 'Universidad', 'España', 'Libros'],
@@ -19,6 +20,7 @@ data = pd.read_csv('tabla_inicial.csv')
 
 #print(data)
 '''
+
 
 def generateIndex(numTotalTweets):
     dirName = 'prueba'
@@ -42,31 +44,32 @@ def generateIndex(numTotalTweets):
                 text = tweet['text']
             text = text.strip()
             text = text.lower()
-            text = re.sub('[¿|?|$|.|,|:|;|!|º|«|»|(|)|@|¡|"|😆|/|#]', '', text)
+            text = re.sub('[¿|?|$|.|,|:|;|!|º|«|»|(|)|@|¡|"|😆|“|/|#|%]', '', text)
             text = text.split()
+            stemmer = SnowballStemmer('spanish')
             for word in text:
-                if word in listTerm:    ## si es keyword
-                    if tweet['id'] in indexDb[word][1]:
-                        indexDb[word][1][tweet['id']] += 1      # Update tf de keyword (word) en tweetId
+                red_word = stemmer.stem(word)
+                if red_word in listTerm:    ## si es keyword
+                    if tweet['id'] in indexDb[red_word][1]:
+                        indexDb[red_word][1][tweet['id']] += 1      # Update tf de keyword (word) en tweetId
                     else:
-                        indexDb[word][1][tweet['id']] = 1       # init tf de keyword (word) en tweetId
-                        indexDb[word][0] += 1  # Update Document Frequency
+                        indexDb[red_word][1][tweet['id']] = 1       # init tf de keyword (word) en tweetId
+                        indexDb[red_word][0] += 1  # Update Document Frequency
         fjson.close()
     print(indexDb)
     return [indexDb, numTotalTweets]
 
 
-def genIdf_tfIdf(indexDb, numTotalDocs):
-    print("genIDF_TFIDF")
-    for term in indexDb:
-        idf = math.log(numTotalDocs/(indexDb[term][0]), 10)
-        indexDb[term][0] = idf
-        for doc in range(1,len(indexDb[term])):
-            #print(indexDb[term][doc][1])
-            tf = indexDb[term][doc][1]
-            tfIdf = math.log(1+tf, 10) * idf
-            indexDb[term][doc][1] = tfIdf
-    return indexDb
+def stemQuery(text):
+    query_result = []
+    stemmer = SnowballStemmer('spanish')
+    text = text.strip()
+    text = text.lower()
+    text = re.sub('[¿|?|$|.|,|:|;|!|º|«|»|(|)|@|¡|"|😆|“|/|#|%]', '', text)
+    text = text.split()
+    for term in text:
+        query_result.append(stemmer.stem(term))
+    return query_result
 
 
 def genQuerytfIdf(query, indexDb, numTotalTweets):
@@ -104,6 +107,7 @@ def genDocsTfIdf(query, indexDb, numTotalTweets):
     print(dicTweetsId_tf_idf)
     return dicTweetsId_tf_idf
 
+
 def genSquareByDoc(dicTweetsId_tf_idf):
     print(" -- Generate Square Docs --")
     dicTweetIdSquares = {}
@@ -132,10 +136,8 @@ def genScoreCoseno(dicTweetsId_tf_idf, dicTweetIdSquares, querytfIdf_square_par)
             tf_idf_Q = query_tf_idf[term]
             tf_idf_Q_norm = tf_idf_Q / Square_query
             cosenoTweetId += (tf_idf_norm * tf_idf_Q_norm)
-        dicCosenos[tweetId] = cosenoTweetId
-    print(dicCosenos)
+        dicCosenos[tweetId] = round(cosenoTweetId, 4)
     dicCosenos = {k: v for k, v in sorted(dicCosenos.items(), key=lambda item: -item[1])}
-    print(dicCosenos)
     return dicCosenos
 
 
@@ -148,9 +150,10 @@ def inicial(numTotalTweets):
     return listResult
 
 
-def queryIndex(indexDb, query, numTotalTweets):
+def queryIndex(indexDb, query_str, numTotalTweets):
     print("-- Searching Query in IndexDb --")
     listDocument = os.listdir('prueba')
+    query = stemQuery(query_str)
     querytfIdf_square_par = genQuerytfIdf(query, indexDb, numTotalTweets)
     dicTweetsId_tf_idf = genDocsTfIdf(query, indexDb, numTotalTweets)
     dicTweetIdSquares = genSquareByDoc(dicTweetsId_tf_idf)

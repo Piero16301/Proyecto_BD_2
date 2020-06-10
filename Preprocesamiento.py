@@ -19,7 +19,7 @@ def generateTokens(dirName):
                 else:
                     texto = tweet['text']
                 texto = texto.strip()
-                texto = re.sub('[¿|?|$|.|,|:|;|!|º|«|»|(|)|@|¡|"|😆|/|#]', '', texto)
+                texto = re.sub('[¿|?|$|.|,|:|;|!|º|«|»|(|)|@|¡|"|😆|“|/|#|%]', '', texto)
                 texto = texto.lower()
                 tokens = texto.split()
                 keywords = []
@@ -29,8 +29,9 @@ def generateTokens(dirName):
                     if "http" in token:
                         continue
                     keywords.append(token)
+                stemmer = SnowballStemmer('spanish')
                 for token in keywords:
-                    tokensTotales.append(token)
+                    tokensTotales.append(stemmer.stem(token))
         tokensTotales = list(dict.fromkeys(tokensTotales))
     return tokensTotales
 
