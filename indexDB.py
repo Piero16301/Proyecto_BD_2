@@ -21,7 +21,7 @@ data = pd.read_csv('tabla_inicial.csv')
 '''
 
 def generateIndex(numTotalTweets):
-    dirName = 'data'
+    dirName = 'prueba'
     listTerm = generateTokens(dirName)
     print("-- Generate Index --")
     listDocument = os.listdir(dirName)
@@ -92,16 +92,15 @@ def genDocsTfIdf(query, indexDb, numTotalTweets):
     # Generate List Docs
     dicTweetsId_tf_idf = {}
     for term in query:
-        for tweetNum in range(1,len(indexDb[term])):
-            tweetId = indexDb[term][tweetNum][0]
-            tf_term = indexDb[term][tweetNum][1]
-            tf_Norm = math.log(1 + tf_term)
+        for tweetId in indexDb[term][1]:
+            tf_term = indexDb[term][1][tweetId]
+            tf_norm = math.log(1 + tf_term)
             df_term = indexDb[term][0]
-            idf = math.log(numTotalTweets/df_term)
-            tf_idf = tf_Norm * idf
+            idf = math.log(numTotalTweets / df_term)
+            tf_idf = tf_norm * idf
             if tweetId not in dicTweetsId_tf_idf:
-                dicTweetsId_tf_idf[tweetId] = []
-            dicTweetsId_tf_idf[tweetId].append((term, tf_idf))
+                dicTweetsId_tf_idf[tweetId] = {}
+            dicTweetsId_tf_idf[tweetId][term] = tf_idf
     print(dicTweetsId_tf_idf)
     return dicTweetsId_tf_idf
 
@@ -110,8 +109,8 @@ def genSquareByDoc(dicTweetsId_tf_idf):
     dicTweetIdSquares = {}
     for tweetId in dicTweetsId_tf_idf:
         squareTweetId = 0
-        for termNum in range(len(dicTweetsId_tf_idf[tweetId])):
-            tf_idf = dicTweetsId_tf_idf[tweetId][termNum][1]
+        for term in dicTweetsId_tf_idf[tweetId]:
+            tf_idf = dicTweetsId_tf_idf[tweetId][term]
             squareTweetId += tf_idf**2
         squareTweetId = math.sqrt(squareTweetId)
         dicTweetIdSquares[tweetId] = squareTweetId
@@ -121,28 +120,26 @@ def genSquareByDoc(dicTweetsId_tf_idf):
 
 def genScoreCoseno(dicTweetsId_tf_idf, dicTweetIdSquares, querytfIdf_square_par):
     print(" -- genScoreCoseno -- ")
-    query_tf_idf = querytfIdf_square_par[0]
+    query_tf_idf = querytfIdf_square_par[0]     # return dict -> query_tf_idf
     Square_query = querytfIdf_square_par[1]
     dicCosenos = {}
     for tweetId in dicTweetsId_tf_idf:
         cosenoTweetId = 0
-        for numTerm in range(len(dicTweetsId_tf_idf[tweetId])):
-            tf_idf = dicTweetsId_tf_idf[tweetId][numTerm][1]
+        for term in dicTweetsId_tf_idf[tweetId]:
+            tf_idf = dicTweetsId_tf_idf[tweetId][term]
             squareTweetId = dicTweetIdSquares[tweetId]
             tf_idf_norm = tf_idf/squareTweetId
-            term_tweet = dicTweetsId_tf_idf[tweetId][numTerm][0]
-            tf_idf_Q = query_tf_idf[term_tweet]
+            tf_idf_Q = query_tf_idf[term]
             tf_idf_Q_norm = tf_idf_Q / Square_query
             cosenoTweetId += (tf_idf_norm * tf_idf_Q_norm)
         dicCosenos[tweetId] = cosenoTweetId
     print(dicCosenos)
-    print({k: v for k, v in sorted(dicCosenos.items(), key=lambda item: -item[1])})
+    dicCosenos = {k: v for k, v in sorted(dicCosenos.items(), key=lambda item: -item[1])}
+    print(dicCosenos)
     return dicCosenos
 
 
 def inicial(numTotalTweets):
-    #listDocument = os.listdir('prueba')
-    # listTerm = ["espina", "corrupto", "fujimorista", "moral", "candidato", "miedo"]
     listResult = generateIndex(numTotalTweets)
     indexDb = listResult[0]
     numTotalTweets = listResult[1]
@@ -157,8 +154,7 @@ def queryIndex(indexDb, query, numTotalTweets):
     querytfIdf_square_par = genQuerytfIdf(query, indexDb, numTotalTweets)
     dicTweetsId_tf_idf = genDocsTfIdf(query, indexDb, numTotalTweets)
     dicTweetIdSquares = genSquareByDoc(dicTweetsId_tf_idf)
-    genScoreCoseno(dicTweetsId_tf_idf, dicTweetIdSquares, querytfIdf_square_par)
-    #listCoseno = genScoreCoseno(indexDb, listDocument, queryItdf, squareByDoc)
-    #print(listCoseno)
-    #return listCoseno
+    dicScoreCoseno = genScoreCoseno(dicTweetsId_tf_idf, dicTweetIdSquares, querytfIdf_square_par)
+    print(dicScoreCoseno)
+    return dicScoreCoseno
 
