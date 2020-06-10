@@ -5,9 +5,8 @@ from nltk.stem import SnowballStemmer
 import re
 
 
-def generateTokens():
+def generateTokens(dirName):
     print("-- Generate Tokens --")
-    dirName = 'prueba'
     listaArchivos = os.listdir(dirName)
     tokensTotales = list()
     for archivo in listaArchivos:
@@ -25,8 +24,8 @@ def generateTokens():
                 tokens = texto.split()
                 keywords = []
                 for token in tokens:
-                    if token in stopwords.words('spanish'):
-                        continue
+                    #if token in stopwords.words('spanish'):
+                    #    continue
                     if "http" in token:
                         continue
                     keywords.append(token)

@@ -20,37 +20,39 @@ data = pd.read_csv('tabla_inicial.csv')
 #print(data)
 '''
 
-def generateIndex(listTerm, listDocument, numTotalTweets):
+def generateIndex(numTotalTweets):
+    dirName = 'data'
+    listTerm = generateTokens(dirName)
     print("-- Generate Index --")
+    listDocument = os.listdir(dirName)
     indexDb = {}
     for term in listTerm:
-        indexDb[term] = [0]
+        indexDb[term] = [0, {}]
     for document in listDocument:
-        #print("--------------------------")
-        #print("Analysing document: ", document)
-        #print("--------------------------")
-        fjson = open('prueba/' + document, encoding="utf-8")
+        print("--------------------------")
+        print("Analysing document: ", document)
+        print("--------------------------")
+        fjson = open(dirName + "/" + document, encoding="utf-8")
         listTweetsDoc = json.load(fjson)
-        for term in listTerm:
-            tf = 0
-            df = 0
-            for tweet in listTweetsDoc:
-                numTotalTweets += 1
-                if tweet['retweeted'] is True:
-                    text = tweet['RT_text']
-                else:
-                    text = tweet['text']
-                text = text.strip()
-                text = text.lower()
-                text = re.sub('[¿|?|$|.|,|:|;|!|º|«|»|(|)|@|¡|"|😆|/|#]', '', text)
-                text = text.split()
-                for word in text:
-                    if term in word:
-                        tf += 1
-                if tf > 0:
-                    indexDb[term][0] += 1  # Update Document Frequency
-                    indexDb[term].append([tweet['id'], tf])
+        for tweet in listTweetsDoc:
+            numTotalTweets += 1
+            if tweet['retweeted'] is True:
+                text = tweet['RT_text']
+            else:
+                text = tweet['text']
+            text = text.strip()
+            text = text.lower()
+            text = re.sub('[¿|?|$|.|,|:|;|!|º|«|»|(|)|@|¡|"|😆|/|#]', '', text)
+            text = text.split()
+            for word in text:
+                if word in listTerm:    ## si es keyword
+                    if tweet['id'] in indexDb[word][1]:
+                        indexDb[word][1][tweet['id']] += 1      # Update tf de keyword (word) en tweetId
+                    else:
+                        indexDb[word][1][tweet['id']] = 1       # init tf de keyword (word) en tweetId
+                        indexDb[word][0] += 1  # Update Document Frequency
         fjson.close()
+    print(indexDb)
     return [indexDb, numTotalTweets]
 
 
@@ -134,40 +136,14 @@ def genScoreCoseno(dicTweetsId_tf_idf, dicTweetIdSquares, querytfIdf_square_par)
             cosenoTweetId += (tf_idf_norm * tf_idf_Q_norm)
         dicCosenos[tweetId] = cosenoTweetId
     print(dicCosenos)
-
-
-def genScoreCosenoOld(indexDb, listDocument, queryItdf, squareByDoc):
-    print("-- Gen Score Coseno --")
-    listCoseno = []
-    for document in listDocument:
-        cosenoDoc = 0
-        for term in indexDb:
-            normalizadoTerm = 0
-            for docNum in range(1,len(indexDb[term])):
-                if document == indexDb[term][docNum][0]:
-                    #print("term: ", term,  "document:", indexDb[term][docNum], " tfIdf: ", indexDb[term][docNum][1])
-                    tfIdf = indexDb[term][docNum][1]
-                    normalizadoTerm = tfIdf/squareByDoc[document]
-                    if term in queryItdf:
-                        normalizadoQuery = queryItdf[term]/squareByDoc['query']
-                    else:
-                        normalizadoQuery = 0
-                    cosenoDoc += (normalizadoTerm * normalizadoQuery)
-        listCoseno.append((document, cosenoDoc))
-    #print(listCoseno)
-    listCoseno = sorted(listCoseno, key=lambda x: -x[1])
-    print(listCoseno)
-    return listCoseno
+    print({k: v for k, v in sorted(dicCosenos.items(), key=lambda item: -item[1])})
+    return dicCosenos
 
 
 def inicial(numTotalTweets):
-    #listDocument = os.listdir('data')
-    listDocument = os.listdir('prueba')
-    numTotalDocs = len(listDocument)
+    #listDocument = os.listdir('prueba')
     # listTerm = ["espina", "corrupto", "fujimorista", "moral", "candidato", "miedo"]
-    listTerm = generateTokens()
-    print(len(listTerm))
-    listResult = generateIndex(listTerm, listDocument, numTotalTweets)
+    listResult = generateIndex(numTotalTweets)
     indexDb = listResult[0]
     numTotalTweets = listResult[1]
     for term in indexDb:

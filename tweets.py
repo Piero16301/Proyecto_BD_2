@@ -11,8 +11,19 @@ def getTextTweet(tweetId):
     twitter = Twython(CONSUMER_KEY, CONSUMER_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
     # Query
-    tweet = twitter.show_status(id="1026814183042686976", tweet_mode='extended')
-    if tweet['retweeted_status'] is not None:
-        return tweet['retweeted_status']['full_text']
+    tweet = twitter.show_status(id=tweetId, tweet_mode='extended')
+    infoTweet = {}
+    infoTweet['rt_status'] = tweet['retweeted_status'] is not None
+    if infoTweet['rt_status']:
+        infoTweet['text'] = tweet['retweeted_status']['full_text']
+        infoTweet['name'] = tweet['entities']['user_mentions'][0]['name']
+        infoTweet['screen_name'] = tweet['entities']['user_mentions'][0]['screen_name']
     else:
-        return tweet['full_text']
+        infoTweet['text'] = tweet['full_text']
+    infoTweet['date'] = tweet['created_at']
+    infoTweet['username'] = tweet['user']['name']
+    infoTweet['user_scree_name'] = "@" + tweet['user']['screen_name']
+    return infoTweet
+
+
+print(getTextTweet('1026814183042686976'))
