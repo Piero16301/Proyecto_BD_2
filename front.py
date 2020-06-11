@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 import json
 import os
 from indexDB import inicial, queryIndex
+from tweets import getTweet
 
 app = Flask(__name__)
 
@@ -11,6 +12,7 @@ indice = listResult[0]
 numTotalTweets = listResult[1]
 print("Front: ", numTotalTweets)
 
+
 @app.route('/')
 def hello_world():
     return render_template("index.html")
@@ -18,25 +20,17 @@ def hello_world():
 
 @app.route("/search")
 def searchFile():
-    file_name = [{'name': 'tweets_2018-08-07.json'}, {'name': 'tweets_2018-08-08.json'},
-                 {'name': 'tweets_2018-08-08.json'}]
     query = request.args.get("query")
-    queryIndex(indice, query, numTotalTweets)
-    return render_template("resultado.html", consulta=query, files=file_name)
+    tweets = queryIndex(indice, query, numTotalTweets)
+    return render_template("resultado.html", consulta=query, tweets=tweets)
 
 
-@app.route("/search/<string:consulta>/<string:file>")
-def searchTweet(consulta, file):
+@app.route("/search/<string:consulta>/<int:tweet_id>")
+def searchTweet(consulta, tweet_id):
     consult_formated = consulta.lower()
-    file_name = os.getcwd() + "/prueba/" + file
-    json_f = open(file_name, "r", encoding="utf-8")
-    tweets = json.load(json_f)
-    result = []
-    for tweet in tweets:
-        if consult_formated in tweet['text'].lower():
-            result.append(tweet)
-    return render_template("tweets.html", consulta=consulta, result=result, file=file)
+    tweet = getTweet(str(tweet_id))
+    return render_template("tweets.html", consulta=consulta, tweet_id = tweet_id, tweet = tweet)
 
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True, use_reloader = False)

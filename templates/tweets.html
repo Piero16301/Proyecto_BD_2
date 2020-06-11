@@ -26,21 +26,20 @@
         <section class="tweets">
 
             <div class="resultado">
-                <h2>{{file}}</h2>
-                <p>Tweets relacionados a la consulta <b>{{consulta}}</b></p>
+                <h2>Tweet ID: {{tweet_id}}</h2>
+                <p>Tweet relacionados a la consulta <b>{{consulta}}</b></p>
             </div>
 
             <div class="line"></div>
 
-            {% for tweet in result %}
             <div class="tweet">
-                {% if tweet["retweeted"] is true %}
+                {% if tweet["rt_status"] is true %}
                 <div class="retweet">
                     <div class="left">
                         <svg viewBox="0 0 24 24" class="r-1re7ezh r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-1plcrui r-lrvibr r-1xzupcd"><g><path d="M23.615 15.477c-.47-.47-1.23-.47-1.697 0l-1.326 1.326V7.4c0-2.178-1.772-3.95-3.95-3.95h-5.2c-.663 0-1.2.538-1.2 1.2s.537 1.2 1.2 1.2h5.2c.854 0 1.55.695 1.55 1.55v9.403l-1.326-1.326c-.47-.47-1.23-.47-1.697 0s-.47 1.23 0 1.697l3.374 3.375c.234.233.542.35.85.35s.613-.116.848-.35l3.375-3.376c.467-.47.467-1.23-.002-1.697zM12.562 18.5h-5.2c-.854 0-1.55-.695-1.55-1.55V7.547l1.326 1.326c.234.235.542.352.848.352s.614-.117.85-.352c.468-.47.468-1.23 0-1.697L5.46 3.8c-.47-.468-1.23-.468-1.697 0L.388 7.177c-.47.47-.47 1.23 0 1.697s1.23.47 1.697 0L3.41 7.547v9.403c0 2.178 1.773 3.95 3.95 3.95h5.2c.664 0 1.2-.538 1.2-1.2s-.535-1.2-1.198-1.2z"></path></g></svg>
                     </div>
-                    <a href="#" target="_blank" class="right">
-                        {{tweet["user_name"]}} retwitteó
+                    <a href="https://twitter.com/{{tweet['user_scree_name']}}" target="_blank" class="right">
+                        {{tweet["username"]}} retwitteó
                     </a>
                 </div>
                 {% endif %}
@@ -50,12 +49,14 @@
                     </div>
                     <div class="content">
                         <div class="top">
-                            {% if tweet["retweeted"] is true %}
-                                {% set nombre = tweet["RT_user_name"] %}
+                            {% if tweet["rt_status"] is true %}
+                                {% set nombre = "Orginal Tweet" %}
+                                {% set sc_name = "nombre_usuario" %}
                             {% else %}
-                                {% set nombre = tweet["user_name"] %}
+                                {% set nombre = tweet["username"] %}
+                                {% set sc_name = tweet["user_scree_name"] %}
                             {% endif %}
-                            <a href="https://twitter.com/{{nombre}}" target="_blank" class="nombre">
+                            <a href="https://twitter.com/{{sc_name}}" target="_blank" class="nombre">
                                 {{nombre}}
                             </a>
                             <p> {% set fecha = tweet["date"].split(' ') %}
@@ -63,12 +64,7 @@
                             </p>
                         </div>
                         <p class="texto">
-                            {% if tweet["retweeted"] is true %}
-                                {% set contenido = tweet["RT_text"] %}
-                            {% else %}
-                                {% set contenido = tweet["text"] %}
-                            {% endif %}
-                            {{contenido}}
+                            {{tweet["text"]}}
                         </p>
                         <div class="reaciones">
                             <svg viewBox="0 0 24 24" width="35px"><g><path d="M14.046 2.242l-4.148-.01h-.002c-4.374 0-7.8 3.427-7.8 7.802 0 4.098 3.186 7.206 7.465 7.37v3.828c0 .108.044.286.12.403.142.225.384.347.632.347.138 0 .277-.038.402-.118.264-.168 6.473-4.14 8.088-5.506 1.902-1.61 3.04-3.97 3.043-6.312v-.017c-.006-4.367-3.43-7.787-7.8-7.788zm3.787 12.972c-1.134.96-4.862 3.405-6.772 4.643V16.67c0-.414-.335-.75-.75-.75h-.396c-3.66 0-6.318-2.476-6.318-5.886 0-3.534 2.768-6.302 6.3-6.302l4.147.01h.002c3.532 0 6.3 2.766 6.302 6.296-.003 1.91-.942 3.844-2.514 5.176z"></path></g></svg>
@@ -79,7 +75,6 @@
                     </div>
                 </div>
             </div>
-            {% endfor %}
 
         </section>
     </main>

@@ -155,9 +155,11 @@ def queryIndex(indexDb, query_str, numTotalTweets):
     listDocument = os.listdir('prueba')
     query = stemQuery(query_str)
     querytfIdf_square_par = genQuerytfIdf(query, indexDb, numTotalTweets)
-    dicTweetsId_tf_idf = genDocsTfIdf(query, indexDb, numTotalTweets)
-    dicTweetIdSquares = genSquareByDoc(dicTweetsId_tf_idf)
-    dicScoreCoseno = genScoreCoseno(dicTweetsId_tf_idf, dicTweetIdSquares, querytfIdf_square_par)
-    print(dicScoreCoseno)
-    return dicScoreCoseno
+    if len(querytfIdf_square_par[0]) != 0:
+        dicTweetsId_tf_idf = genDocsTfIdf(query, indexDb, numTotalTweets)
+        dicTweetIdSquares = genSquareByDoc(dicTweetsId_tf_idf)
+        dicScoreCoseno = genScoreCoseno(dicTweetsId_tf_idf, dicTweetIdSquares, querytfIdf_square_par)
+        print(dicScoreCoseno)
+        return dicScoreCoseno
+    return {}
 

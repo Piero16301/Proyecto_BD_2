@@ -93,6 +93,7 @@ main {
 
 .nombre {
     width: 356px;
+    text-align: center;
 }
 
 .number {

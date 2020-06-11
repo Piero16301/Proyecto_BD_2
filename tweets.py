@@ -1,6 +1,6 @@
 from twython import Twython, TwythonError
 
-def getTextTweet(tweetId):
+def getTweet(tweetId):
     # Credentials
     CONSUMER_KEY = "WKtmu8QRdyTtKDeMirpDW50zj"
     CONSUMER_SECRET = "G3pP3ZLJBcE7AHhiGAOsLPy06956oXUCbGstp0OIKM8EEH7312"
@@ -12,18 +12,17 @@ def getTextTweet(tweetId):
 
     # Query
     tweet = twitter.show_status(id=tweetId, tweet_mode='extended')
+    print(tweet)
     infoTweet = {}
-    infoTweet['rt_status'] = tweet['retweeted_status'] is not None
-    if infoTweet['rt_status']:
+    infoTweet['text'] = tweet['full_text']
+    if infoTweet['text'][0] + infoTweet['text'][1] == "RT":
+        infoTweet['rt_status'] = True
         infoTweet['text'] = tweet['retweeted_status']['full_text']
-        infoTweet['name'] = tweet['entities']['user_mentions'][0]['name']
-        infoTweet['screen_name'] = tweet['entities']['user_mentions'][0]['screen_name']
     else:
-        infoTweet['text'] = tweet['full_text']
+        infoTweet['rt_status'] = False
     infoTweet['date'] = tweet['created_at']
     infoTweet['username'] = tweet['user']['name']
     infoTweet['user_scree_name'] = "@" + tweet['user']['screen_name']
     return infoTweet
 
-
-print(getTextTweet('1026814183042686976'))
+#getTweet("1035486425842626560")

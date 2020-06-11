@@ -26,25 +26,30 @@
         <section class="resultados">
 
             <div class="titulos">
-                <p class="nombre">ARCHIVO</p>
                 <p class="number">NUMERO</p>
+                <p class="nombre">TWEET ID</p>
                 <p class="puntaje">SCORE</p>
+                <p STYLE="width: 170px; text-align: right" class="nombre">DETALLE</p>
             </div>
 
-            {% for file in files %}
+            {% set number = namespace(value=1)%}
+            {% for tweet in tweets %}
             <div class="resultado">
+                <p class="numero">
+                    {{number.value}}
+                </p>
                 <div class="image">
                     <img src="{{ url_for('static', filename='img/tweet.png') }}" alt="_Result">
                 </div>
                 <p class="file_name">
-                    {{file["name"]}}
+                    {{tweet}}
                 </p>
-                <p class="numero">24</p>
-                <p class="score">0.5</p>
-                <a class="go" href="/search/{{consulta}}/{{file['name']}}">
-                    Ver tweets +
+                <p class="score">{{tweets[tweet]}}</p>
+                <a class="go" href="/search/{{consulta}}/{{tweet}}">
+                    Ver tweet +
                 </a>
             </div>
+            {% set number.value = number.value + 1 %}
             {% endfor %}
 
         </section>
