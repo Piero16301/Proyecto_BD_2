@@ -76,6 +76,9 @@ Desde la función inicial se llama a la función generateIndex(), el cual retorn
 - Indice invertido: el cual es una estructura diccionario que tiene como key un keyword o término y como value una lista con 2 elementos el primer elemento es Document Frequency (número de tweets en el cual aparece dicho término) y el segundo elemento es un diccionario que tiene como key los tweetId (documentID) y el term Frequency del término en dicho tweetId.
 - Número total de tweets: el total de tweets en la colección.
 
+Estructura del indice invertido:
+[]!(images/IndiceInvertido_out.png)
+
 #### Implementación de consultas
 Desde la capa de frontend se hace una llamada a la función "queryIndex(indexDb, query_str, numTotalTweets)" la cual recibe como argumentos:
 - el indice invertido
