@@ -21,7 +21,8 @@ data = pd.read_csv('tabla_inicial.csv')
 '''
 
 
-def generateIndex(numTotalTweets):
+def generateIndex():
+    numTotalTweets = 0
     dirName = 'test'
     listTerm = generateTokens(dirName)
     print("-- Generate Index --")
@@ -152,8 +153,8 @@ def kresultados(dicCosenos, k):
         return dicKCosenos
     return dicCosenos
 
-def inicial(numTotalTweets):
-    listResult = generateIndex(numTotalTweets)
+def inicial():
+    listResult = generateIndex()
     indexDb = listResult[0]
     numTotalTweets = listResult[1]
     for term in indexDb:

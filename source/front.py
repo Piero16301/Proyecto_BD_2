@@ -4,8 +4,8 @@ from tweets import getTweet
 
 app = Flask(__name__)
 
-numTotalTweets = 0
-listResult = inicial(numTotalTweets)
+
+listResult = inicial()
 indice = listResult[0]
 numTotalTweets = listResult[1]
 print("Front:", numTotalTweets)
