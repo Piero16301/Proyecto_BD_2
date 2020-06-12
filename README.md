@@ -27,6 +27,16 @@ Para probar el desempeño del índice invertido, se ha construido una aplicació
 * Búsqueda textual relacionada a los temas de interés
 * Presentación de los resultados de forma amigable e intuitiva.
 
+## Implementación
+### Backend
+#### Preprocesamiento
+Primero se extraen los nombres de los archivos json que se encuentran en el directorio que se quiere evaluar, y se guarda en una lista.
+```
+listaArchivos = os.listdir(dirName)
+```
+
+### Frontend
+
 ## Testing
 Para realizar las pruebas del índice, se han cargado 25 archivos en formato json con un total 32 831 tweets y un tamaño de 15 MB que van a ser analizados durante la consulta. Para poder realizar la consulta, se debe ejecutar el servidor de flask que se encuentra en el archivo front.py el cual muestra la siguiente ventana de búsqueda en el navegador.
 
