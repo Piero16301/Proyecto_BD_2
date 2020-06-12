@@ -34,6 +34,41 @@ Primero se extraen los nombres de los archivos json que se encuentran en el dire
 ```
 listaArchivos = os.listdir(dirName)
 ```
+Luego se procede a guardar los stopwords que se encuentran en un archivo de texto plano, y se guardan en una lista para hacer el filtrado del contenido de los archivos json más adelante.
+```
+stopwords = list()
+stopFile = codecs.open("stoplist.txt", "r", "utf-8")
+    for line in stopFile:
+        line = line.strip()
+        line = line.lower()
+        words = line.split(" ")
+        for word in words:
+            if word not in stopwords:
+                stopwords.append(word)
+```
+Finalmente, se realiza una iteración sobre cada uno de los archivos json. Para cada archivo, se itera sobre cada uno de sus elementos, que vendrían a ser los tweets, se hace la separación en palabras del atributo RT_text o text dependiendo si es retweet o no, para obtener el texto original. Luego se hace la eliminación de los caracteres especiales y la transformación de todas las letras a minúscula. Después, se hace el filtrado de los stopwords y las direcciones url y se guarda temporalmente en una lista que va a contener las palabras filtradas de ese tweet. Finalmente, se realiza el proceso de Stemming y se agregan las palabras resultantes a la lista de tokens totales, se eliminan las palabras duplicadas y se retorna la lista de tokens totales.
+```
+for archivo in listaArchivos:
+    for tweet in tweets:
+        if tweet['retweeted'] is True:
+            texto = tweet['RT_text']
+        else:
+            texto = tweet['text']
+        texto = texto.strip()
+        texto = re.sub('[¿|?|$|.|,|:|;|!|º|«|»|(|)|@|¡|"|😆|“|/|#|%]', '', texto)
+        texto = texto.lower()
+        for token in tokens:
+            if token in stopwords:
+                continue
+            if "http" in token:
+                continue
+            keywords.append(token)
+        stemmer = SnowballStemmer('spanish')
+        for token in keywords:
+            tokensTotales.append(stemmer.stem(token))
+    tokensTotales = list(dict.fromkeys(tokensTotales))
+return tokensTotales
+```
 
 ### Frontend
 
