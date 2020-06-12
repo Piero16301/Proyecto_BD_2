@@ -70,6 +70,35 @@ for archivo in listaArchivos:
 return tokensTotales
 ```
 
+#### Construcción del índice invertido
+La generación del índice invertido es realizado durante la carga inicial de la aplicación mediante la llamada a la función "def inicial()"  definido en el archivo indexDB.py.
+Desde la función inicial se llama a la función generateIndex(), el cual retorna una lista con los siguientes elementos:
+- Indice invertido: el cual es una estructura diccionario que tiene como key un keyword o término y como value una lista con 2 elementos el primer elemento es Document Frequency (número de tweets en el cual aparece dicho término) y el segundo elemento es un diccionario que tiene como key los tweetId (documentID) y el term Frequency del término en dicho tweetId.
+- Número total de tweets: el total de tweets en la colección.
+
+#### Implementación de consultas
+Desde la capa de frontend se hace una llamada a la función "queryIndex(indexDb, query_str, numTotalTweets)" la cual recibe como argumentos:
+- el indice invertido
+- el query como string
+- el total de tweets de la colección
+
+La ejecución de la consulta realiza las siguientes actividades:
+
+- El query pasa por un proceso de stemming, para reducir a sus raiz las palabras del query.
+
+- Generación del tf_idf y la norma del query
+
+- Generación del tf_idf de los documentos relacionados a los términos del query.
+
+- Generación de la norma de cada de unos de los documentos relacionados a los términos del query.
+
+- Generación de los scores basado en la similitud de coseno.
+
+- Generación de una lista ordenada de los k elementos que se aproximan a la consulta.
+
+
+#### Implementación
+
 ### Frontend
 #### Recuperación de Tweets con Twython
 Una vez obtenidos los resultados de la consulta, que son los k twwets con mayor puntaje en relación con la consulta, si el usuario lo desea puede ver el tweet original haciendo click en la opción 'Ver tweet +'. Para implementar esta función, se ha hecho uso de la API Twython, la cual nos permite realizar recuperación de datos de Twitter directamente desde Python. Para ello, primero se debe ingresar las credenciales de desarrollador en el constructor de Twython.
