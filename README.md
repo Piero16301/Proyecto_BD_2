@@ -27,6 +27,71 @@ Para probar el desempeño del índice invertido, se ha construido una aplicació
 * Búsqueda textual relacionada a los temas de interés
 * Presentación de los resultados de forma amigable e intuitiva.
 
+## Implementación
+### Backend
+#### Preprocesamiento
+Primero se extraen los nombres de los archivos json que se encuentran en el directorio que se quiere evaluar, y se guarda en una lista.
+```
+listaArchivos = os.listdir(dirName)
+```
+Luego se procede a guardar los stopwords que se encuentran en un archivo de texto plano, y se guardan en una lista para hacer el filtrado del contenido de los archivos json más adelante.
+```
+stopwords = list()
+stopFile = codecs.open("stoplist.txt", "r", "utf-8")
+    for line in stopFile:
+        line = line.strip()
+        line = line.lower()
+        words = line.split(" ")
+        for word in words:
+            if word not in stopwords:
+                stopwords.append(word)
+```
+Finalmente, se realiza una iteración sobre cada uno de los archivos json. Para cada archivo, se itera sobre cada uno de sus elementos, que vendrían a ser los tweets, se hace la separación en palabras del atributo RT_text o text dependiendo si es retweet o no, para obtener el texto original. Luego se hace la eliminación de los caracteres especiales y la transformación de todas las letras a minúscula. Después, se hace el filtrado de los stopwords y las direcciones url y se guarda temporalmente en una lista que va a contener las palabras filtradas de ese tweet. Finalmente, se realiza el proceso de Stemming y se agregan las palabras resultantes a la lista de tokens totales, se eliminan las palabras duplicadas y se retorna la lista de tokens totales.
+```
+for archivo in listaArchivos:
+    for tweet in tweets:
+        if tweet['retweeted'] is True:
+            texto = tweet['RT_text']
+        else:
+            texto = tweet['text']
+        texto = texto.strip()
+        texto = re.sub('[¿|?|$|.|,|:|;|!|º|«|»|(|)|@|¡|"|😆|“|/|#|%]', '', texto)
+        texto = texto.lower()
+        for token in tokens:
+            if token in stopwords:
+                continue
+            if "http" in token:
+                continue
+            keywords.append(token)
+        stemmer = SnowballStemmer('spanish')
+        for token in keywords:
+            tokensTotales.append(stemmer.stem(token))
+    tokensTotales = list(dict.fromkeys(tokensTotales))
+return tokensTotales
+```
+
+### Frontend
+#### Recuperación de Tweets con Twython
+Una vez obtenidos los resultados de la consulta, que son los k twwets con mayor puntaje en relación con la consulta, si el usuario lo desea puede ver el tweet original haciendo click en la opción 'Ver tweet +'. Para implementar esta función, se ha hecho uso de la API Twython, la cual nos permite realizar recuperación de datos de Twitter directamente desde Python. Para ello, primero se debe ingresar las credenciales de desarrollador en el constructor de Twython.
+```
+twitter = Twython(CONSUMER_KEY, CONSUMER_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
+```
+Luego, se invoca al método que muestra el estado del tweet, que basicamente retorna un json con todos los campos del tweet. en esos campos, se realiza la comprobación si es que es retweet o no, para extraer siempre el texto original. Estos datos se almacenan en un diccionario junto con la fecha y el username y se retorna a la función searchTweet para mostrarlo en el navegador.
+```
+tweet = twitter.show_status(id=tweetId, tweet_mode='extended')
+infoTweet = {}
+infoTweet['text'] = tweet['full_text']
+    if infoTweet['text'][0] + infoTweet['text'][1] == "RT":
+        infoTweet['rt_status'] = True
+        infoTweet['text'] = tweet['retweeted_status']['full_text']
+    else:
+        infoTweet['rt_status'] = False
+    infoTweet['date'] = tweet['created_at']
+    infoTweet['username'] = tweet['user']['name']
+    infoTweet['user_scree_name'] = "@" + tweet['user']['screen_name']
+    return infoTweet
+```
+
 ## Testing
 Para realizar las pruebas del índice, se han cargado 25 archivos en formato json con un total 32 831 tweets y un tamaño de 15 MB que van a ser analizados durante la consulta. Para poder realizar la consulta, se debe ejecutar el servidor de flask que se encuentra en el archivo front.py el cual muestra la siguiente ventana de búsqueda en el navegador.
 
