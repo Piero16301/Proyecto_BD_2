@@ -20,7 +20,6 @@ data = pd.read_csv('tabla_inicial.csv')
 #print(data)
 '''
 
-
 def generateIndex():
     numTotalTweets = 0
     dirName = 'test'
