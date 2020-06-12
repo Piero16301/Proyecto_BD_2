@@ -2,6 +2,8 @@ import json
 import os
 import math
 import re
+import timeit
+import time
 from Preprocesamiento import generateTokens
 from nltk.stem import SnowballStemmer
 from memoriaSecundaria import saveIndex
@@ -155,6 +157,7 @@ def kresultados(dicCosenos, k):
     return dicCosenos
 
 def inicial():
+    start = time.time()
     files = os.listdir('indice')
     if len(files) == 0:
         listResult = generateIndex()
@@ -165,6 +168,8 @@ def inicial():
     numTotalTweets = listResult[1]
     for term in indexDb:
         print(term, "-->", indexDb[term])
+    end = time.time()
+    print("Tiempo total", ((end - start) * 1000.0), "ms")
     return listResult
 
 
