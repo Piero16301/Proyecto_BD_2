@@ -77,7 +77,8 @@ Desde la función inicial se llama a la función generateIndex(), el cual retorn
 - Número total de tweets: el total de tweets en la colección.
 
 Estructura del indice invertido:
-[]!(images/IndiceInvertido_out.png)
+![](images/IndiceInvertido_out.png)
+
 
 #### Implementación de consultas
 Desde la capa de frontend se hace una llamada a la función "queryIndex(indexDb, query_str, numTotalTweets)" la cual recibe como argumentos:
