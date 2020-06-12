@@ -4,6 +4,8 @@ import math
 import re
 from Preprocesamiento import generateTokens
 from nltk.stem import SnowballStemmer
+from memoriaSecundaria import saveIndex
+from memoriaSecundaria import readIndex
 
 '''
 tablaInicial = {'Termino': ['Clima', 'Biblioteca', 'Universidad', 'España', 'Libros'],
@@ -153,7 +155,12 @@ def kresultados(dicCosenos, k):
     return dicCosenos
 
 def inicial():
-    listResult = generateIndex()
+    files = os.listdir('indice')
+    if len(files) == 0:
+        listResult = generateIndex()
+        saveIndex(listResult)
+    else:
+        listResult = readIndex()
     indexDb = listResult[0]
     numTotalTweets = listResult[1]
     for term in indexDb:
