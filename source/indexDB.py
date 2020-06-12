@@ -22,7 +22,7 @@ data = pd.read_csv('tabla_inicial.csv')
 
 
 def generateIndex(numTotalTweets):
-    dirName = 'test'
+    dirName = 'demo'
     listTerm = generateTokens(dirName)
     print("-- Generate Index --")
     listDocument = os.listdir(dirName)
