@@ -8,7 +8,7 @@ numTotalTweets = 0
 listResult = inicial(numTotalTweets)
 indice = listResult[0]
 numTotalTweets = listResult[1]
-print("Front: ", numTotalTweets)
+print("Front:", numTotalTweets)
 
 
 @app.route('/')
