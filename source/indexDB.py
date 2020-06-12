@@ -22,7 +22,7 @@ data = pd.read_csv('tabla_inicial.csv')
 
 
 def generateIndex(numTotalTweets):
-    dirName = 'prueba'
+    dirName = 'test'
     listTerm = generateTokens(dirName)
     print("-- Generate Index --")
     listDocument = os.listdir(dirName)
@@ -55,7 +55,6 @@ def generateIndex(numTotalTweets):
                         indexDb[red_word][1][tweet['id']] = 1       # init tf de keyword (word) en tweetId
                         indexDb[red_word][0] += 1  # Update Document Frequency
         fjson.close()
-    print(indexDb)
     return [indexDb, numTotalTweets]
 
 
@@ -139,6 +138,19 @@ def genScoreCoseno(dicTweetsId_tf_idf, dicTweetIdSquares, querytfIdf_square_par)
     dicCosenos = {k: v for k, v in sorted(dicCosenos.items(), key=lambda item: -item[1])}
     return dicCosenos
 
+def kresultados(dicCosenos, k):
+    print(" -- k resultados -- ")
+    if len(dicCosenos) > k:
+        dicKCosenos = {}
+        i = 1
+        for tweetid in dicCosenos:
+            if i <= k:
+                dicKCosenos[tweetid] = dicCosenos[tweetid]
+            else:
+                break
+            i += 1
+        return dicKCosenos
+    return dicCosenos
 
 def inicial(numTotalTweets):
     listResult = generateIndex(numTotalTweets)
@@ -151,7 +163,6 @@ def inicial(numTotalTweets):
 
 def queryIndex(indexDb, query_str, numTotalTweets):
     print("-- Searching Query in IndexDb --")
-    listDocument = os.listdir('prueba')
     query = stemQuery(query_str)
     querytfIdf_square_par = genQuerytfIdf(query, indexDb, numTotalTweets)
     if len(querytfIdf_square_par[0]) != 0:
@@ -159,6 +170,8 @@ def queryIndex(indexDb, query_str, numTotalTweets):
         dicTweetIdSquares = genSquareByDoc(dicTweetsId_tf_idf)
         dicScoreCoseno = genScoreCoseno(dicTweetsId_tf_idf, dicTweetIdSquares, querytfIdf_square_par)
         print(dicScoreCoseno)
-        return dicScoreCoseno
+        dicKScoreCoseno = kresultados(dicScoreCoseno, 50)
+        print(dicKScoreCoseno)
+        return dicKScoreCoseno
     return {}
 
