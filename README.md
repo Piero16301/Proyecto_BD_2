@@ -147,11 +147,15 @@ Desde la función inicial() se invocan uno de los 2 siguientes métodos definido
 - readIndex(): invocado si el index file ya existe en memoria secundaria. En este caso este metodo carga desde memoria secundaria a memoria principal el indice invertido y el número total de tweets.
 
 ##### Experimentación memoria secundaria: tiempo de carga inicial de la aplicación
-Implementando la lectura del indice desde memoria secundaria hemos podido observar una importante reducción de tiempo de la carga inicial de la aplicación tal como se muestra en la siguiente imagen:
+Implementando la lectura del indice desde memoria secundaria hemos podido observar una importante reducción de tiempo de la carga inicial de la aplicación tal como se muestra en las siguientes imágenes.
+
+![](images/tabla_indice.png)
+
+Estos datos se pueden visualizar en el siguiente gráfico.
 
 ![](images/carga_inicial_indice.png)
 
-Los tiempos mostrados son referentes a la carga inicial de la aplicación el cual genera un indice leyendo sobre 25 archivos en formato json con un total 32 831 tweets.
+Los tiempos mostrados son referentes a la carga inicial de la aplicación el cual genera un indice leyendo sobre 25 archivos en formato json con un total 32 831 tweets y sobre otros 3 archivos json con un total de 8580 tweets.
 
 
 ### Frontend
