@@ -130,7 +130,7 @@ query = stemQuery(query_str)
 ![](images/generate_tf_idf_query.png)
 
 - Generación del tf_idf de los documentos (relacionados a los términos del query).
-![](images/generate_square_docs.png)
+![](images/generate_docs_tf_idf.png)
 
 - Generación de la norma de cada de unos de los documentos (relacionados a los términos del query).
 ![](images/generate_square_docs.png)
