@@ -95,6 +95,22 @@ Desde la capa de frontend se hace una llamada a la función "queryIndex(indexDb,
 - el query como string
 - el total de tweets de la colección
 
+```
+def queryIndex(indexDb, query_str, numTotalTweets):
+    print("-- Searching Query in IndexDb --")
+    query = stemQuery(query_str)
+    querytfIdf_square_par = genQuerytfIdf(query, indexDb, numTotalTweets)
+    if len(querytfIdf_square_par[0]) != 0:
+        dicTweetsId_tf_idf = genDocsTfIdf(query, indexDb, numTotalTweets)
+        dicTweetIdSquares = genSquareByDoc(dicTweetsId_tf_idf)
+        dicScoreCoseno = genScoreCoseno(dicTweetsId_tf_idf, dicTweetIdSquares, querytfIdf_square_par)
+        print(dicScoreCoseno)
+        dicKScoreCoseno = kresultados(dicScoreCoseno, 50)
+        print(dicKScoreCoseno)
+        return dicKScoreCoseno
+    return {}
+```
+
 La ejecución de la consulta realiza las siguientes actividades:
 
 - El query pasa por un proceso de stemming, para reducir a sus raiz las palabras del query.
