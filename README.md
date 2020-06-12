@@ -144,26 +144,6 @@ Se retora un diccionario con los k resultados más cercanos a la consulta.
 #### Implementación
 
 ### Frontend
-#### Recuperación de Tweets con Twython
-Una vez obtenidos los resultados de la consulta, que son los k twwets con mayor puntaje en relación con la consulta, si el usuario lo desea puede ver el tweet original haciendo click en la opción 'Ver tweet +'. Para implementar esta función, se ha hecho uso de la API Twython, la cual nos permite realizar recuperación de datos de Twitter directamente desde Python. Para ello, primero se debe ingresar las credenciales de desarrollador en el constructor de Twython.
-```
-twitter = Twython(CONSUMER_KEY, CONSUMER_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-```
-Luego, se invoca al método que muestra el estado del tweet, que basicamente retorna un json con todos los campos del tweet. en esos campos, se realiza la comprobación si es que es retweet o no, para extraer siempre el texto original. Estos datos se almacenan en un diccionario junto con la fecha y el username y se retorna a la función searchTweet para mostrarlo en el navegador.
-```
-tweet = twitter.show_status(id=tweetId, tweet_mode='extended')
-infoTweet = {}
-infoTweet['text'] = tweet['full_text']
-    if infoTweet['text'][0] + infoTweet['text'][1] == "RT":
-        infoTweet['rt_status'] = True
-        infoTweet['text'] = tweet['retweeted_status']['full_text']
-    else:
-        infoTweet['rt_status'] = False
-    infoTweet['date'] = tweet['created_at']
-    infoTweet['username'] = tweet['user']['name']
-    infoTweet['user_scree_name'] = "@" + tweet['user']['screen_name']
-    return infoTweet
-```
 
 #### Uso de Flask y Jinja
 
@@ -210,6 +190,27 @@ La función `searchTweet` usa nustro método `getTwet()` que interactua con la A
         consult_formated = consulta.lower()
         tweet = getTweet(str(tweet_id))
         return render_template("tweets.html", consulta=consulta, tweet_id = tweet_id, tweet = tweet)
+
+#### Recuperación de Tweets con Twython
+Una vez obtenidos los resultados de la consulta, que son los k twwets con mayor puntaje en relación con la consulta, si el usuario lo desea puede ver el tweet original haciendo click en la opción 'Ver tweet +'. Para implementar esta función, se ha hecho uso de la API Twython, la cual nos permite realizar recuperación de datos de Twitter directamente desde Python. Para ello, primero se debe ingresar las credenciales de desarrollador en el constructor de Twython.
+```
+twitter = Twython(CONSUMER_KEY, CONSUMER_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
+```
+Luego, se invoca al método que muestra el estado del tweet, que basicamente retorna un json con todos los campos del tweet. en esos campos, se realiza la comprobación si es que es retweet o no, para extraer siempre el texto original. Estos datos se almacenan en un diccionario junto con la fecha y el username y se retorna a la función searchTweet para mostrarlo en el navegador.
+```
+tweet = twitter.show_status(id=tweetId, tweet_mode='extended')
+infoTweet = {}
+infoTweet['text'] = tweet['full_text']
+    if infoTweet['text'][0] + infoTweet['text'][1] == "RT":
+        infoTweet['rt_status'] = True
+        infoTweet['text'] = tweet['retweeted_status']['full_text']
+    else:
+        infoTweet['rt_status'] = False
+    infoTweet['date'] = tweet['created_at']
+    infoTweet['username'] = tweet['user']['name']
+    infoTweet['user_scree_name'] = "@" + tweet['user']['screen_name']
+    return infoTweet
+```
 
 
 ## Testing
