@@ -74,14 +74,23 @@ return tokensTotales
 La generación del índice invertido es realizado durante la carga inicial de la aplicación mediante la llamada a la función "def inicial()"  definido en el archivo indexDB.py.
 ```
 def inicial():
-    listResult = generateIndex()
+    files = os.listdir('indice')
+    if len(files) == 0:
+        listResult = generateIndex()
+        saveIndex(listResult)
+    else:
+        listResult = readIndex()
     indexDb = listResult[0]
     numTotalTweets = listResult[1]
     for term in indexDb:
         print(term, "-->", indexDb[term])
     return listResult
 ```
-Desde la función inicial se llama a la función generateIndex(), el cual retorna una lista con los siguientes elementos:
+Desde la función inicial, realizan las siguiente actividades:
+- Se verifica la existencia un indice en memoria secundaria:
+  + Si no existe un indice en memoria secundaria, se invoca la función generateIndex() y luego la función saveIndex(listResult) se encarga de guardar a disco el índice.
+  + Si existe un indice se invoca la función readIndex() el cual carga hacia memoria principal el indice existente.
+La función inicial retorna una lista con los siguientes elementos:
 - Indice invertido: el cual es una estructura diccionario que tiene como key un keyword o término y como value una lista con 2 elementos el primer elemento es Document Frequency (número de tweets en el cual aparece dicho término) y el segundo elemento es un diccionario que tiene como key los tweetId (documentID) y el term Frequency del término en dicho tweetId.
 - Número total de tweets: el total de tweets en la colección.
 
@@ -130,7 +139,7 @@ query = stemQuery(query_str)
 ![](images/generate_score_cosenos.png)
 
 - Generación de una lista ordenada de los k elementos que se aproximan a la consulta.
-
+Se retora un diccionario con los k resultados más cercanos a la consulta.
 
 #### Implementación
 
