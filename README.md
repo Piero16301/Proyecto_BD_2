@@ -139,7 +139,7 @@ query = stemQuery(query_str)
 ![](images/generate_score_cosenos.png)
 
 - Generación de una lista ordenada de los k elementos que se aproximan a la consulta.
-Se retora un diccionario con los k resultados más cercanos a la consulta.
+Se retorna un diccionario con los k resultados más cercanos a la consulta.
 
 #### Implementación de memoria secundaria
 Desde la función inicial() se invocan uno de los 2 siguientes métodos definidos en el archivo memoriaSecundaria.py
