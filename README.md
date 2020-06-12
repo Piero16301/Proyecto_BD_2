@@ -114,14 +114,20 @@ def queryIndex(indexDb, query_str, numTotalTweets):
 La ejecución de la consulta realiza las siguientes actividades:
 
 - El query pasa por un proceso de stemming, para reducir a sus raiz las palabras del query.
-
+```
+query = stemQuery(query_str)
+```
 - Generación del tf_idf y la norma del query
+![images/generate_tf_idf_query.png]
 
-- Generación del tf_idf de los documentos relacionados a los términos del query.
+- Generación del tf_idf de los documentos (relacionados a los términos del query).
+![images/generate_square_docs.png]
 
-- Generación de la norma de cada de unos de los documentos relacionados a los términos del query.
+- Generación de la norma de cada de unos de los documentos (relacionados a los términos del query).
+![images/generate_square_docs.png]
 
 - Generación de los scores basado en la similitud de coseno.
+![images/generate_score_cosenos.png]
 
 - Generación de una lista ordenada de los k elementos que se aproximan a la consulta.
 
