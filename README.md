@@ -165,7 +165,7 @@ infoTweet['text'] = tweet['full_text']
     return infoTweet
 ```
 
-## Uso de Flask y Jinja
+#### Uso de Flask y Jinja
 
 Para la visualización de los resultados y la interacción del usuario con el programa a través del navegador hemos utilizado el microframework `Flask`. Gracias a `Jinja` podemos presentar páginas dinámicas y con la ayuda de `Flask` usamos disparadores que activan funciones específicas relacionan con rutas URLs que podemos programar dentro de python.
 
