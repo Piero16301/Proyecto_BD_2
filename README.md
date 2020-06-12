@@ -141,7 +141,13 @@ query = stemQuery(query_str)
 - Generación de una lista ordenada de los k elementos que se aproximan a la consulta.
 Se retora un diccionario con los k resultados más cercanos a la consulta.
 
-#### Implementación
+#### Implementación de memoria secundaria
+Desde la función inicial() se invocan uno de los 2 siguientes métodos definidos en el archivo memoriaSecundaria.py
+- saveIndex(indexDB): invocado si el index file no existe en memoria secundaria. En este caso, se ejecuta la generación del indice en memoria principal y finalizado este proceso se guarda en memoria secundaria el indice invertido y el número total de tweets.
+- readIndex(): invocado si el index file ya existe en memoria secundaria. En este caso este metodo carga desde memoria secundaria a memoria principal el indice invertido y el número total de tweets.
+
+##### Experimentación memoria secundaria: tiempo de carga inicial de la aplicación
+
 
 ### Frontend
 
