@@ -165,6 +165,53 @@ infoTweet['text'] = tweet['full_text']
     return infoTweet
 ```
 
+## Uso de Flask y Jinja
+
+Para la visualización de los resultados y la interacción del usuario con el programa a través del navegador hemos utilizado el microframework `Flask`. Gracias a `Jinja` podemos presentar páginas dinámicas y con la ayuda de `Flask` usamos disparadores que activan funciones específicas relacionan con rutas URLs que podemos programar dentro de python.
+
+Para usar este microframework debemos importar la clase `Flask` e instanciarla como se muestra a continuación:
+
+    from flask import Flask
+    app = Flask(__name__)
+
+Para nuestra página principal estamos usando la ruta `'\'`, la cual usa flask por defecto al momento de arrancar el servicio. Lo que mostramos al usuario es nuestro `index.html` el cual tiene un campo de entrada para que el usuario realice su consulta.
+`Flask` renderiza este archivo a través del método `render_template()`
+
+    @app.route('/')
+    def hello_world():
+        return render_template("index.html")
+
+Para mostrar los id de los tweets que se están buscando relacionados a una consulta usamos la ruta `\search`. El método relacionado a esta ruta se llama `searchFile` y se activa cuando el usuario envía su consulta a través del campo de entrada en la página de inicio. A continuación, se muestra la estructura del buscador donde se aprecia la llamada a la función descrita previamente.
+
+    <form action="{{ url_for('searchFile') }}">
+        <input type="text" name="query" placeholder="Consulta" id="buscador">
+        <input type="submit" value="Buscar" id="btn">
+    </form>
+
+La consulta brindada por el usuario en el formulario (donde se encuntra eñ campo de entrada) se obtiene en Python con la clase `request`. Luego, procesamos la consuta y obtenemos los tweets id relacionados a esta mediante nuestro método `queryIndex()`. Mostramos los resultados en la página `resultado.html` la cual, con el el uso de `Jinja`, espera los parámetros de `consulta` (brindada por el usuario) y `tweets` (la lista de los tweets id ordenados por su score) A continuación, se muestra la implementación.
+
+    @app.route("/search")
+    def searchFile():
+        query = request.args.get("query")
+        tweets = queryIndex(indice, query, numTotalTweets)
+        return render_template("resultado.html", consulta=query, tweets=tweets)
+
+Si queremos visualizar el contenido de dicho tweet usamos la función `searchTweet(consulta, tweet_id)` la cual está relacionada a la ruta `/search/<string:consulta>/<int:tweet_id>`. Dentro de la página `resultado.html` le damos al usuraio la opción de *Ver Tweet +*, dicho elemento manda al usuario a la ruta previamente descrita.
+A coninuación, se muestra cuando se haría la llamada a la ruta.
+
+    <a class="go" href="/search/{{consulta}}/{{tweet}}">
+        Ver tweet +
+    </a>
+
+La función `searchTweet` usa nustro método `getTwet()` que interactua con la API de Twitter para obtener la información relacionada al Tweet id. Toda la información se mostrará mediante por el archivo `tweets.html` el cual, con el uso de  `Jinja`, espera los parámetros `consulta`, `tweet_id` y  `tweet`. Este último es un diccionario que contiene la información a mostrar del Tweet. A continuación, se muestra la implementación en Python.
+
+    @app.route("/search/<string:consulta>/<int:tweet_id>")
+        def searchTweet(consulta, tweet_id):
+        consult_formated = consulta.lower()
+        tweet = getTweet(str(tweet_id))
+        return render_template("tweets.html", consulta=consulta, tweet_id = tweet_id, tweet = tweet)
+
+
 ## Testing
 Para realizar las pruebas del índice, se han cargado 25 archivos en formato json con un total 32 831 tweets y un tamaño de 15 MB que van a ser analizados durante la consulta. Para poder realizar la consulta, se debe ejecutar el servidor de flask que se encuentra en el archivo front.py el cual muestra la siguiente ventana de búsqueda en el navegador.
 
