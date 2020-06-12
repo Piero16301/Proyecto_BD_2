@@ -1,14 +1,27 @@
 import json
 import os
-from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
 import re
+import codecs
 
 
 def generateTokens(dirName):
     print("-- Generate Tokens --")
     listaArchivos = os.listdir(dirName)
     tokensTotales = list()
+    stopwords = list()
+
+    # Se cargan los stopwords
+
+    stopFile = codecs.open("stoplist.txt", "r", "utf-8")
+    for line in stopFile:
+        line = line.strip()
+        line = line.lower()
+        words = line.split(" ")
+        for word in words:
+            if word not in stopwords:
+                stopwords.append(word)
+
     for archivo in listaArchivos:
         with open(dirName + '/' + archivo, encoding="utf-8") as json_file:
             print("Check json File: ", json_file)
@@ -24,8 +37,8 @@ def generateTokens(dirName):
                 tokens = texto.split()
                 keywords = []
                 for token in tokens:
-                    #if token in stopwords.words('spanish'):
-                    #    continue
+                    if token in stopwords:
+                        continue
                     if "http" in token:
                         continue
                     keywords.append(token)

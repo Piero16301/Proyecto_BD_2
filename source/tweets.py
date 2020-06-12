@@ -1,4 +1,4 @@
-from twython import Twython, TwythonError
+from twython import Twython
 
 def getTweet(tweetId):
     # Credentials

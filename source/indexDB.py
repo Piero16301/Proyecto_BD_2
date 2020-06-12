@@ -2,7 +2,6 @@ import json
 import os
 import math
 import re
-import pandas as pd
 from Preprocesamiento import generateTokens
 from nltk.stem import SnowballStemmer
 

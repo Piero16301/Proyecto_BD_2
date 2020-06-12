@@ -1,6 +1,4 @@
 from flask import Flask, render_template, request
-import json
-import os
 from indexDB import inicial, queryIndex
 from tweets import getTweet
 
