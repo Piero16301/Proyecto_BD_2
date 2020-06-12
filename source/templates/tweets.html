@@ -66,7 +66,11 @@
                         <p class="texto">
                             {% set contenido = tweet["text"].split(' ') %}
                             {% for word in contenido %}
-                                {{word}}
+                                {% if "#" == word[0] %}
+                                    {{word}}
+                                {% else %}
+                                    {{word}}
+                                {% endif %}
                             {% endfor %}
                         </p>
                         <div class="reaciones">
