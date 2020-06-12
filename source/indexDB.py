@@ -72,7 +72,7 @@ def stemQuery(text):
 
 def genQuerytfIdf(query, indexDb, numTotalTweets):
     print(" -- Generate TF_IDF from Query --")
-    print(numTotalTweets)
+    print("Total de tweets: ", numTotalTweets)
     squareQuery = 0
     queryDictfIdf = {}
     for term in query:
