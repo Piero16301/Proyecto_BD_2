@@ -72,15 +72,44 @@ return tokensTotales
 
 #### Construcción del índice invertido
 La generación del índice invertido es realizado durante la carga inicial de la aplicación mediante la llamada a la función "def inicial()"  definido en el archivo indexDB.py.
+```
+def inicial():
+    listResult = generateIndex()
+    indexDb = listResult[0]
+    numTotalTweets = listResult[1]
+    for term in indexDb:
+        print(term, "-->", indexDb[term])
+    return listResult
+```
 Desde la función inicial se llama a la función generateIndex(), el cual retorna una lista con los siguientes elementos:
 - Indice invertido: el cual es una estructura diccionario que tiene como key un keyword o término y como value una lista con 2 elementos el primer elemento es Document Frequency (número de tweets en el cual aparece dicho término) y el segundo elemento es un diccionario que tiene como key los tweetId (documentID) y el term Frequency del término en dicho tweetId.
 - Número total de tweets: el total de tweets en la colección.
+
+Estructura del indice invertido:
+![](images/IndiceInvertido_out.png)
+
 
 #### Implementación de consultas
 Desde la capa de frontend se hace una llamada a la función "queryIndex(indexDb, query_str, numTotalTweets)" la cual recibe como argumentos:
 - el indice invertido
 - el query como string
 - el total de tweets de la colección
+
+```
+def queryIndex(indexDb, query_str, numTotalTweets):
+    print("-- Searching Query in IndexDb --")
+    query = stemQuery(query_str)
+    querytfIdf_square_par = genQuerytfIdf(query, indexDb, numTotalTweets)
+    if len(querytfIdf_square_par[0]) != 0:
+        dicTweetsId_tf_idf = genDocsTfIdf(query, indexDb, numTotalTweets)
+        dicTweetIdSquares = genSquareByDoc(dicTweetsId_tf_idf)
+        dicScoreCoseno = genScoreCoseno(dicTweetsId_tf_idf, dicTweetIdSquares, querytfIdf_square_par)
+        print(dicScoreCoseno)
+        dicKScoreCoseno = kresultados(dicScoreCoseno, 50)
+        print(dicKScoreCoseno)
+        return dicKScoreCoseno
+    return {}
+```
 
 La ejecución de la consulta realiza las siguientes actividades:
 
